@@ -1,106 +1,102 @@
 
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Bitcoin } from "lucide-react";
+import { Bitcoin, ArrowUp, CreditCard, DollarSign } from "lucide-react";
 
 const WalletOverview = () => {
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-6">Wallet Overview</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Wallet Balance Card */}
+      <Card className="p-6 bg-[#0A1E3B] border-0 text-white">
+        <div className="flex flex-col h-full">
+          <div className="flex items-center mb-4">
+            <div className="bg-blue-600/20 p-2 rounded mr-2">
+              <CreditCard className="h-6 w-6 text-blue-500" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Wallet Balance</p>
+              <p className="text-gray-400 text-xs">$0.00</p>
+            </div>
+          </div>
+          
+          <div className="mt-2 mb-2">
+            <h3 className="text-2xl md:text-3xl font-mono">0.00000000 BTC</h3>
+          </div>
+        </div>
+      </Card>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="p-6 bg-gradient-to-br from-bitcoin/90 to-bitcoin-dark text-white">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <p className="text-sm text-white/70">Wallet Balance</p>
-              <div className="flex items-center">
-                <Bitcoin size={20} className="mr-1 mt-1" />
-                <span className="text-2xl font-bold">1.2458</span>
-              </div>
-              <p className="text-sm">≈ $86,552.76 USD</p>
+      {/* Total Earnings Card */}
+      <Card className="p-6 bg-[#0A2E2B] border-0 text-white">
+        <div className="flex flex-col h-full">
+          <div className="flex items-center mb-4">
+            <div className="bg-green-600/20 p-2 rounded mr-2">
+              <DollarSign className="h-6 w-6 text-green-500" />
             </div>
-            <div className="rounded-full bg-white/20 p-2">
-              <Bitcoin size={24} />
+            <div>
+              <p className="text-sm text-gray-400">Total Earnings</p>
             </div>
           </div>
           
-          <div className="flex space-x-2">
-            <Button size="sm" variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-none flex-1">
-              Deposit
-            </Button>
-            <Button size="sm" variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-none flex-1">
-              Withdraw
-            </Button>
+          <div className="mt-2 mb-2">
+            <h3 className="text-2xl md:text-3xl font-mono">$0.00</h3>
           </div>
-        </Card>
-        
-        <Card className="p-6 bg-gradient-to-br from-green-500 to-green-700 text-white">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <p className="text-sm text-white/70">Total Earnings</p>
-              <div className="flex items-center">
-                <Bitcoin size={20} className="mr-1 mt-1" />
-                <span className="text-2xl font-bold">0.0824</span>
-              </div>
-              <p className="text-sm">≈ $5,720.21 USD</p>
+          
+          <div className="mt-2">
+            <div className="flex items-center">
+              <ArrowUp className="h-3 w-3 text-green-400 mr-1" />
+              <span className="text-xs text-green-400">+12.5% this month</span>
             </div>
-            <div className="rounded-full bg-white/20 p-2">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="24" 
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-              >
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-              </svg>
+          </div>
+        </div>
+      </Card>
+      
+      {/* Live Prices Card */}
+      <Card className="p-6 bg-[#0A1E3B] border-0 text-white">
+        <div className="flex flex-col h-full">
+          <div className="flex items-center mb-4">
+            <div className="bg-blue-600/20 p-2 rounded mr-2">
+              <CreditCard className="h-6 w-6 text-blue-500" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Live Prices</p>
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <p className="text-xs text-white/70">Today</p>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <Bitcoin size={16} className="mr-1" />
-                <span className="font-medium">0.0008</span>
+                <Bitcoin className="h-5 w-5 mr-2 text-bitcoin" />
+                <div>
+                  <p className="font-medium">Bitcoin</p>
+                  <p className="text-xs text-gray-400">BTC</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-medium">$81,811.00</p>
+                <p className="text-xs text-red-400">-6.15%</p>
               </div>
             </div>
-            <div>
-              <p className="text-xs text-white/70">This Month</p>
+            
+            <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <Bitcoin size={16} className="mr-1" />
-                <span className="font-medium">0.0243</span>
+                <div className="h-5 w-5 mr-2 text-blue-500">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-5">
+                    <path d="M12 2L2 12.5L12 16L22 12.5L12 2Z" fill="currentColor" />
+                    <path d="M2 13.5L12 17L22 13.5L12 22L2 13.5Z" fill="currentColor" fillOpacity="0.7" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-medium">Ethereum</p>
+                  <p className="text-xs text-gray-400">ETH</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-medium">$1,773.93</p>
+                <p className="text-xs text-green-400">+6.95%</p>
               </div>
             </div>
           </div>
-        </Card>
-        
-        <Card className="p-6 bg-white border">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <p className="text-sm text-gray-500">Live BTC Price</p>
-              <p className="text-2xl font-bold text-gray-900">$69,486.23</p>
-              <p className="text-sm text-green-600">+2.34% (24h)</p>
-            </div>
-            <Bitcoin size={24} className="text-bitcoin" />
-          </div>
-          
-          <div className="h-12 bg-gray-100 rounded flex items-end">
-            <div 
-              className="h-8 bg-bitcoin rounded-sm" 
-              style={{ width: '70%' }}
-            />
-            <div 
-              className="h-10 bg-bitcoin-light rounded-sm" 
-              style={{ width: '30%' }}
-            />
-          </div>
-        </Card>
-      </div>
+        </div>
+      </Card>
     </div>
   );
 };

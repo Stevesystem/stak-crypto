@@ -2,33 +2,30 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed w-full top-0 z-50 bg-background/80 backdrop-blur-md border-b border-gray-800">
+    <nav className="fixed w-full top-0 z-50 bg-[#00030B] border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <div className="mr-2 text-primary text-2xl">⟁</div>
-              <span className="font-bold text-xl text-white">STAK</span>
+              <div className="text-blue-500 font-bold text-2xl">
+                <span className="relative">
+                  <span className="inline-block">STAK</span>
+                  <span className="absolute -top-1 -left-4 w-10 h-6 border-t-2 border-l-2 border-blue-500 rounded-tl-lg"></span>
+                </span>
+              </div>
             </Link>
           </div>
           
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-300 hover:text-primary font-medium transition-colors">
-              Home
-            </Link>
-            <Link to="/about" className="text-gray-300 hover:text-primary font-medium transition-colors">
-              About
-            </Link>
-            <Link to="/dashboard" className="text-gray-300 hover:text-primary font-medium transition-colors">
-              Dashboard
-            </Link>
-            <Button className="bg-primary hover:bg-primary/90 text-white rounded-full px-5">
-              Start Staking Now
+          <div>
+            <Button variant="ghost" className="text-gray-300 hover:text-white">
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign Out
             </Button>
           </div>
           
@@ -63,25 +60,6 @@ const Navbar = () => {
             </button>
           </div>
         </div>
-        
-        {isMenuOpen && (
-          <div className="md:hidden py-4 animate-fade-in border-t border-gray-800">
-            <Link to="/" className="block py-2 text-gray-300 hover:text-primary font-medium">
-              Home
-            </Link>
-            <Link to="/about" className="block py-2 text-gray-300 hover:text-primary font-medium">
-              About
-            </Link>
-            <Link to="/dashboard" className="block py-2 text-gray-300 hover:text-primary font-medium">
-              Dashboard
-            </Link>
-            <div className="pt-4">
-              <Button className="w-full bg-primary hover:bg-primary/90 text-white">
-                Start Staking Now
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
     </nav>
   );
