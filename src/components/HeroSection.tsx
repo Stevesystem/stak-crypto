@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -12,31 +11,19 @@ const supportedCoins = [
 
 const HeroSection = () => {
   return (
-    <div className="relative py-12 md:py-16 lg:py-24 overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background to-navy-light opacity-80 z-0"></div>
-      
+    <div className="relative py-12 md:py-16 lg:py-24 overflow-hidden bg-[#00030B]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
-          {/* Left side: Image */}
           <div className="w-full lg:w-1/2 mb-8 lg:mb-0 order-2 lg:order-1">
             <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-primary/10 rounded-3xl blur-2xl opacity-70"></div>
-              <div className="relative bg-black/30 rounded-3xl p-2 border border-gray-800/50 overflow-hidden">
-                <img 
-                  src="/lovable-uploads/5653e020-dfaa-4b7c-9681-9baeaf4de1db.png" 
-                  alt="Crypto Crystal Prism" 
-                  className="w-full h-auto object-cover rounded-2xl blue-glow animate-pulse-glow"
-                />
-              </div>
-              
-              {/* Decorative elements */}
-              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary/20 rounded-full blur-xl"></div>
-              <div className="absolute top-1/4 -left-8 w-16 h-16 bg-primary/30 rounded-full blur-xl"></div>
+              <img 
+                src="/lovable-uploads/5653e020-dfaa-4b7c-9681-9baeaf4de1db.png" 
+                alt="Crypto Crystal Prism" 
+                className="w-full h-auto object-cover rounded-2xl"
+              />
             </div>
           </div>
           
-          {/* Right side: Text content */}
           <div className="w-full lg:w-1/2 text-left order-1 lg:order-2">
             <div className="inline-block px-4 py-2 bg-secondary/80 rounded-full mb-6 border border-primary/30">
               <p className="text-sm md:text-base font-medium text-primary">
@@ -83,7 +70,6 @@ const HeroSection = () => {
         </div>
       </div>
       
-      {/* Bottom staking stats bar */}
       <div className="mt-16 lg:mt-24 w-full bg-gradient-to-r from-navy-light/50 to-card/50 border-y border-gray-800/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
