@@ -1,62 +1,118 @@
 
-import { Shield, CircleDollarSign, Clock, Users } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
-const features = [
+const cryptoCoins = [
   {
-    title: "High Bitcoin Staking APY",
-    description: "Earn up to 6.5% APY on your Bitcoin holdings, among the highest and most consistent rates available.",
-    icon: CircleDollarSign,
-    highlight: "Up to 6.5%",
+    name: "Bitcoin (BTC)",
+    logo: "₿",
+    apy: "3.1%",
+    color: "orange",
+    locked: "Instant",
+    minStake: "0.005 BTC",
+    dailyReward: "0.0000856"
   },
   {
-    title: "No Lock-Up Periods",
-    description: "Access your Bitcoin whenever you need it with no mandatory staking periods or withdrawal delays.",
-    icon: Clock,
-    highlight: "Withdraw Anytime",
+    name: "FrogCoin (FROG)",
+    logo: "🐸",
+    apy: "9.2%",
+    color: "green",
+    locked: "1 week",
+    minStake: "10 FROG",
+    dailyReward: "0.251"
   },
   {
-    title: "Enterprise-Grade Security",
-    description: "Your Bitcoin is protected by military-grade encryption, multi-signature wallets and cold storage.",
-    icon: Shield,
-    highlight: "100% Cold Storage",
+    name: "Avalanche (AVAX)",
+    logo: "🔺",
+    apy: "5.29%",
+    color: "red",
+    locked: "Instant",
+    minStake: "1.5 AVAX",
+    dailyReward: "0.0217"
   },
   {
-    title: "24/7 Customer Support",
-    description: "Our expert team is available around the clock to answer questions and provide assistance when needed.",
-    icon: Users,
-    highlight: "Always Available",
+    name: "Cardano (ADA)",
+    logo: "₳",
+    apy: "5.23%",
+    color: "blue",
+    locked: "1 week",
+    minStake: "50 ADA",
+    dailyReward: "0.716"
+  },
+  {
+    name: "Jasmy (JASMY)",
+    logo: "🟠",
+    apy: "6.20%",
+    color: "orange",
+    locked: "3 days",
+    minStake: "1000 JASMY",
+    dailyReward: "1.699"
+  },
+  {
+    name: "Stem Token (STEM)",
+    logo: "💲",
+    apy: "8.37%",
+    color: "green",
+    locked: "7 days",
+    minStake: "100 STEM",
+    dailyReward: "2.294"
   }
 ];
 
 const FeatureSection = () => {
   return (
-    <div className="py-16 md:py-24 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="py-20 md:py-24">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">Why Choose Bitcoin Yield Forge</h2>
-          <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-            We combine high yield with unmatched security to give you the best Bitcoin staking experience.
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 glow-text">What Can You Stake?</h2>
+          <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+            Stake the world's best cryptocurrencies and earn daily rewards on your coins.
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
-            <div 
-              key={index}
-              className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform hover:transform hover:scale-105"
-            >
-              <div className="p-3 rounded-full bg-bitcoin/10 mb-6">
-                <feature.icon size={32} className="text-bitcoin" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {cryptoCoins.map((coin, index) => (
+            <div key={index} className="coin-card">
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={`w-12 h-12 flex items-center justify-center rounded-full ${coin.color === 'orange' ? 'orange-glow' : coin.color === 'green' ? 'green-glow' : coin.color === 'red' ? 'red-glow' : 'blue-glow'} bg-gradient-to-br ${coin.color === 'orange' ? 'from-yellow-600 to-orange-500' : coin.color === 'green' ? 'from-green-500 to-teal-500' : coin.color === 'red' ? 'from-red-500 to-pink-600' : 'from-blue-600 to-indigo-700'}`}>
+                    <span className="text-2xl">{coin.logo}</span>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">{coin.name}</h3>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">APY</span>
+                    <span className="text-green-400 font-medium">{coin.apy}</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">Locked</span>
+                    <span className="text-white">{coin.locked}</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">Min. Stake</span>
+                    <span className="text-white">{coin.minStake}</span>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-navy mb-2">{feature.title}</h3>
-              <p className="text-gray-600 mb-4">{feature.description}</p>
-              <div className="mt-auto">
-                <span className="inline-block px-3 py-1 bg-bitcoin/10 rounded-full text-bitcoin font-semibold text-sm">
-                  {feature.highlight}
-                </span>
+              
+              <div className="bg-gradient-to-r from-gray-800/50 to-gray-900/50 p-4 text-center">
+                <button className="text-primary hover:text-primary/90 font-medium transition-colors">
+                  Stake Now
+                </button>
               </div>
             </div>
           ))}
+        </div>
+        
+        <div className="mt-8 text-center">
+          <button className="px-5 py-2 border border-gray-700 rounded-full text-sm text-gray-300 hover:border-primary/60 hover:text-primary transition-colors">
+            Load More
+          </button>
         </div>
       </div>
     </div>

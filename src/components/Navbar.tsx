@@ -2,44 +2,40 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Bitcoin } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
+    <nav className="fixed w-full top-0 z-50 bg-background/80 backdrop-blur-md border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <Bitcoin size={28} className="text-bitcoin mr-2 animate-spin-slow" />
-              <span className="font-bold text-xl text-navy">Bitcoin Yield Forge</span>
+              <div className="mr-2 text-primary text-2xl">⟁</div>
+              <span className="font-bold text-xl text-white">STAK</span>
             </Link>
           </div>
           
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-navy hover:text-bitcoin font-medium transition-colors">
+            <Link to="/" className="text-gray-300 hover:text-primary font-medium transition-colors">
               Home
             </Link>
-            <Link to="/about" className="text-navy hover:text-bitcoin font-medium transition-colors">
+            <Link to="/about" className="text-gray-300 hover:text-primary font-medium transition-colors">
               About
             </Link>
-            <Link to="/dashboard" className="text-navy hover:text-bitcoin font-medium transition-colors">
+            <Link to="/dashboard" className="text-gray-300 hover:text-primary font-medium transition-colors">
               Dashboard
             </Link>
-            <Button variant="outline" className="border-bitcoin text-bitcoin hover:bg-bitcoin hover:text-white">
-              Log In
-            </Button>
-            <Button className="bg-bitcoin hover:bg-bitcoin-dark text-white">
-              Start Staking
+            <Button className="bg-primary hover:bg-primary/90 text-white rounded-full px-5">
+              Start Staking Now
             </Button>
           </div>
           
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-navy hover:text-bitcoin focus:outline-none"
+              className="text-gray-300 hover:text-primary focus:outline-none"
             >
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -69,22 +65,19 @@ const Navbar = () => {
         </div>
         
         {isMenuOpen && (
-          <div className="md:hidden py-4 animate-fade-in">
-            <Link to="/" className="block py-2 text-navy hover:text-bitcoin font-medium">
+          <div className="md:hidden py-4 animate-fade-in border-t border-gray-800">
+            <Link to="/" className="block py-2 text-gray-300 hover:text-primary font-medium">
               Home
             </Link>
-            <Link to="/about" className="block py-2 text-navy hover:text-bitcoin font-medium">
+            <Link to="/about" className="block py-2 text-gray-300 hover:text-primary font-medium">
               About
             </Link>
-            <Link to="/dashboard" className="block py-2 text-navy hover:text-bitcoin font-medium">
+            <Link to="/dashboard" className="block py-2 text-gray-300 hover:text-primary font-medium">
               Dashboard
             </Link>
-            <div className="pt-4 space-y-2">
-              <Button variant="outline" className="w-full border-bitcoin text-bitcoin hover:bg-bitcoin hover:text-white">
-                Log In
-              </Button>
-              <Button className="w-full bg-bitcoin hover:bg-bitcoin-dark text-white">
-                Start Staking
+            <div className="pt-4">
+              <Button className="w-full bg-primary hover:bg-primary/90 text-white">
+                Start Staking Now
               </Button>
             </div>
           </div>

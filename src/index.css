@@ -5,78 +5,48 @@
 
 @layer base {
   :root {
-    --background: 220 33% 98%;
-    --foreground: 222 47% 11%;
+    --background: 220 70% 2%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 222 47% 6%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 222 47% 6%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 39 100% 50%;
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 222 84% 5%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 220 23% 95%;
-    --sidebar-foreground: 240 5% 26%;
-    --sidebar-primary: 39 100% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 5% 96%;
-    --sidebar-accent-foreground: 240 6% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 39 100% 50%;
-  }
-
-  .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 39 100% 50%;
-    --primary-foreground: 222 47% 11%;
-
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-
     --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted-foreground: 215 20% 75%;
 
     --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 63% 31%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 217 33% 17%;
     --input: 217 33% 17%;
     --ring: 213 27% 84%;
-  }
-}
 
-@layer base {
+    --radius: 0.5rem;
+
+    --bitcoin: #f7931a;
+    --bitcoin-dark: #e29000;
+    --bitcoin-light: #f7be38;
+
+    --ethereum: #627eea;
+    --solana: #00FFA3;
+    --cardano: #0033AD;
+    
+    --navy: #0a0e17;
+    --navy-light: #131c2e;
+  }
+
   * {
     @apply border-border;
   }
@@ -84,21 +54,65 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    background-image: radial-gradient(circle at 50% 50%, rgba(29, 78, 216, 0.15) 0%, transparent 60%);
+    background-size: 100% 100%;
+    background-attachment: fixed;
+  }
+
+  .glow {
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.5));
+  }
+
+  .glow-text {
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
   }
   
-  .btc-gradient {
-    @apply bg-gradient-to-r from-bitcoin to-bitcoin-light;
+  .blue-glow {
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.5));
   }
   
-  .navy-gradient {
-    @apply bg-gradient-to-r from-navy to-navy-light;
+  .green-glow {
+    filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.5));
   }
   
-  .glass-card {
-    @apply bg-white/90 backdrop-blur-sm shadow-lg border border-white/20 rounded-xl;
+  .purple-glow {
+    filter: drop-shadow(0 0 8px rgba(161, 78, 255, 0.5));
   }
   
-  .glass-card-dark {
-    @apply bg-navy/80 backdrop-blur-sm shadow-lg border border-white/10 rounded-xl;
+  .orange-glow {
+    filter: drop-shadow(0 0 8px rgba(247, 147, 26, 0.5));
+  }
+  
+  .red-glow {
+    filter: drop-shadow(0 0 8px rgba(255, 59, 59, 0.5));
+  }
+
+  .coin-card {
+    @apply rounded-xl overflow-hidden border border-gray-800 bg-card hover:border-primary/50 transition-all duration-300;
+  }
+
+  .space-dots {
+    background-image: radial-gradient(circle, rgba(59, 130, 246, 0.3) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  .animated-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  .step-connector {
+    @apply h-1 w-16 bg-gradient-to-r from-primary to-blue-500/30 rounded-full mx-auto my-6;
   }
 }

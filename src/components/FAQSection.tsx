@@ -8,63 +8,64 @@ import {
 
 const faqs = [
   {
-    question: "How is BTC staking secure?",
-    answer: "We use institutional-grade security measures including 100% cold storage, multi-signature wallets requiring multiple authorizations, and regular security audits by trusted third parties. Your Bitcoin never leaves our secure infrastructure during the staking process."
+    question: "What is staking?",
+    answer: "Staking is the process of holding crypto in a wallet to support the operations of a blockchain network. In return, holders are rewarded with additional tokens."
   },
   {
-    question: "What's the minimum stake amount?",
-    answer: "The minimum amount to start staking is 0.01 BTC. There is no maximum limit, and our platform is designed to handle both small and large amounts efficiently."
+    question: "Is staking risky?",
+    answer: "Staking with STAK is low risk. While crypto assets may fluctuate in price, our staking protocols are designed to minimize risk while providing consistent rewards."
   },
   {
-    question: "How are rewards paid?",
-    answer: "Rewards are calculated daily and distributed directly to your account in Bitcoin. You can view your accumulated rewards in real-time from your dashboard and withdraw them at any time."
+    question: "What are the benefits of crypto staking?",
+    answer: "Staking lets you earn passive income on your idle crypto holdings. Benefits include regular rewards, minimal effort required, and contributing to network security."
   },
   {
-    question: "Are there any fees for staking?",
-    answer: "We charge a small performance fee of 10% on the rewards generated. There are no deposit fees, and withdrawal fees are limited to the standard Bitcoin network transaction fees."
-  },
-  {
-    question: "Can I withdraw my Bitcoin at any time?",
-    answer: "Yes, one of our key features is that there are no lock-up periods. You can withdraw your Bitcoin at any time without penalties or waiting periods."
-  },
-  {
-    question: "How is the APY calculated?",
-    answer: "The APY (Annual Percentage Yield) is calculated based on the returns generated from various Bitcoin yield strategies, including lending to institutional borrowers, providing liquidity to market makers, and other secure yield-generating activities."
+    question: "How often will I get rewards?",
+    answer: "Rewards are calculated daily and you can view your accumulated rewards in real-time from your dashboard. Payouts occur every 24 hours directly to your wallet."
   }
 ];
 
 const FAQSection = () => {
   return (
-    <div className="py-16 md:py-24">
+    <div className="py-20 md:py-28 relative">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">Frequently Asked Questions</h2>
-          <p className="text-lg text-gray-700">
-            Get answers to the most common questions about our Bitcoin staking platform.
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 glow-text">Staking Questions Answered</h2>
+          <p className="text-lg text-gray-300">
+            Learn how staking works, its benefits, and how to earn rewards.
           </p>
         </div>
         
-        <Accordion type="single" collapsible className="w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {faqs.map((faq, index) => (
-            <AccordionItem key={index} value={`item-${index}`} className="border-b border-gray-200">
-              <AccordionTrigger className="text-left text-lg font-medium text-navy py-4 hover:text-bitcoin">
-                {faq.question}
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pb-4">
-                {faq.answer}
-              </AccordionContent>
-            </AccordionItem>
+            <div key={index} className="bg-card border border-gray-800 rounded-xl overflow-hidden p-5">
+              <div className="flex gap-3 items-start">
+                <div className="w-8 h-8 rounded-full bg-blue-600 blue-glow flex items-center justify-center flex-shrink-0">
+                  <span className="text-xl">?</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-2">{faq.question}</h3>
+                  <p className="text-gray-400 text-sm">{faq.answer}</p>
+                </div>
+              </div>
+            </div>
           ))}
-        </Accordion>
+        </div>
         
-        <div className="mt-12 text-center">
-          <p className="mb-4 text-gray-700">Still have questions?</p>
-          <a 
-            href="#" 
-            className="text-bitcoin hover:text-bitcoin-dark font-medium underline"
-          >
-            Contact our support team
-          </a>
+        <div className="mt-12 bg-gradient-to-r from-blue-900/30 to-indigo-900/30 rounded-xl border border-blue-800/30 p-8 text-center">
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-12 h-12 rounded-full bg-blue-700 blue-glow flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4M12 8h0"/>
+              </svg>
+            </div>
+          </div>
+          <h3 className="text-xl font-bold text-white mb-2">Can't find your question answered here?</h3>
+          <p className="text-gray-300 mb-4">Get in touch with our support team for help.</p>
+          <button className="bg-primary hover:bg-primary/90 text-white font-medium px-6 py-2 rounded-md">
+            Contact Support
+          </button>
         </div>
       </div>
     </div>
