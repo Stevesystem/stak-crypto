@@ -1,68 +1,45 @@
-
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Shield, Bitcoin } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-
 const About = () => {
-  const team = [
-    {
-      name: "Alex Morgan",
-      role: "CEO & Founder",
-      bio: "Former Bitcoin developer with 8+ years experience in blockchain technologies. Led security initiatives at top crypto exchanges.",
-      avatar: "AM"
-    },
-    {
-      name: "Sarah Chen",
-      role: "CTO",
-      bio: "Cryptography expert with background in cybersecurity. Previously built secure infrastructure for financial institutions.",
-      avatar: "SC"
-    },
-    {
-      name: "Michael Richards",
-      role: "Head of Security",
-      bio: "Former security lead at major Bitcoin exchanges. Specializes in cold storage solutions and multi-signature implementations.",
-      avatar: "MR"
-    },
-    {
-      name: "Jessica Kim",
-      role: "Operations Director",
-      bio: "10+ years in fintech operations. Expert in compliance and scaling financial services safely.",
-      avatar: "JK"
-    }
-  ];
-  
-  const securityMeasures = [
-    {
-      title: "100% Cold Storage",
-      description: "All customer Bitcoin is stored in offline, air-gapped cold storage vaults with no exposure to online threats."
-    },
-    {
-      title: "Multi-Signature Technology",
-      description: "Every transaction requires multiple independent approvals, eliminating single points of failure."
-    },
-    {
-      title: "Regular Audits",
-      description: "Our security practices and Bitcoin reserves are regularly audited by trusted third-party firms."
-    },
-    {
-      title: "Advanced Encryption",
-      description: "Military-grade encryption protects all sensitive data and communications within our platform."
-    }
-  ];
-  
-  const partners = [
-    "Bitcoin Magazine",
-    "Wasabi Wallet",
-    "Blockstream",
-    "Lightning Labs",
-    "Casa",
-    "Ledger"
-  ];
-
-  return (
-    <div className="min-h-screen flex flex-col">
+  const team = [{
+    name: "Alex Morgan",
+    role: "CEO & Founder",
+    bio: "Former Bitcoin developer with 8+ years experience in blockchain technologies. Led security initiatives at top crypto exchanges.",
+    avatar: "AM"
+  }, {
+    name: "Sarah Chen",
+    role: "CTO",
+    bio: "Cryptography expert with background in cybersecurity. Previously built secure infrastructure for financial institutions.",
+    avatar: "SC"
+  }, {
+    name: "Michael Richards",
+    role: "Head of Security",
+    bio: "Former security lead at major Bitcoin exchanges. Specializes in cold storage solutions and multi-signature implementations.",
+    avatar: "MR"
+  }, {
+    name: "Jessica Kim",
+    role: "Operations Director",
+    bio: "10+ years in fintech operations. Expert in compliance and scaling financial services safely.",
+    avatar: "JK"
+  }];
+  const securityMeasures = [{
+    title: "100% Cold Storage",
+    description: "All customer Bitcoin is stored in offline, air-gapped cold storage vaults with no exposure to online threats."
+  }, {
+    title: "Multi-Signature Technology",
+    description: "Every transaction requires multiple independent approvals, eliminating single points of failure."
+  }, {
+    title: "Regular Audits",
+    description: "Our security practices and Bitcoin reserves are regularly audited by trusted third-party firms."
+  }, {
+    title: "Advanced Encryption",
+    description: "Military-grade encryption protects all sensitive data and communications within our platform."
+  }];
+  const partners = ["Bitcoin Magazine", "Wasabi Wallet", "Blockstream", "Lightning Labs", "Casa", "Ledger"];
+  return <div className="min-h-screen flex flex-col">
       <Navbar />
       
       <main className="flex-grow mt-16">
@@ -85,9 +62,7 @@ const About = () => {
             <div className="flex flex-col md:flex-row gap-12 items-center">
               <div className="md:w-1/2">
                 <h2 className="text-3xl md:text-4xl font-bold text-navy mb-6">Our Story</h2>
-                <p className="text-lg text-gray-700 mb-4">
-                  Launched in 2023 by a team of Bitcoin advocates and security experts, Bitcoin Yield Forge was born from a simple vision: to create a platform where anyone can earn passive income from their Bitcoin without compromising on security or liquidity.
-                </p>
+                <p className="text-lg text-gray-700 mb-4">Launched in 2022 by a team of Bitcoin advocates and security experts, Bitcoin Yield Forge was born from a simple vision: to create a platform where anyone can earn passive income from their Bitcoin without compromising on security or liquidity.</p>
                 <p className="text-lg text-gray-700 mb-4">
                   We noticed that many existing yield platforms were either too complex for average users, had lengthy lock-up periods, or worse – took dangerous risks with customer funds. We built Bitcoin Yield Forge to solve these problems.
                 </p>
@@ -137,11 +112,7 @@ const About = () => {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {team.map((member, index) => (
-                <div 
-                  key={index} 
-                  className="bg-white rounded-xl p-6 shadow-md flex flex-col items-center text-center"
-                >
+              {team.map((member, index) => <div key={index} className="bg-white rounded-xl p-6 shadow-md flex flex-col items-center text-center">
                   <Avatar className="h-24 w-24 mb-4">
                     <AvatarImage src="" alt={member.name} />
                     <AvatarFallback className="bg-bitcoin text-white text-xl">{member.avatar}</AvatarFallback>
@@ -149,8 +120,7 @@ const About = () => {
                   <h3 className="text-xl font-bold text-navy">{member.name}</h3>
                   <p className="text-bitcoin font-medium mb-4">{member.role}</p>
                   <p className="text-gray-600 text-sm">{member.bio}</p>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </div>
@@ -169,15 +139,10 @@ const About = () => {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              {securityMeasures.map((measure, index) => (
-                <div 
-                  key={index} 
-                  className="bg-white rounded-xl p-6 shadow-md border-l-4 border-bitcoin"
-                >
+              {securityMeasures.map((measure, index) => <div key={index} className="bg-white rounded-xl p-6 shadow-md border-l-4 border-bitcoin">
                   <h3 className="text-xl font-bold text-navy mb-2">{measure.title}</h3>
                   <p className="text-gray-600">{measure.description}</p>
-                </div>
-              ))}
+                </div>)}
             </div>
             
             <div className="bg-navy rounded-xl p-8 md:p-12 text-white">
@@ -215,14 +180,9 @@ const About = () => {
             </div>
             
             <div className="flex flex-wrap justify-center gap-8">
-              {partners.map((partner, index) => (
-                <div 
-                  key={index} 
-                  className="bg-white rounded-xl px-8 py-6 shadow-sm border border-gray-100 flex items-center justify-center min-w-[200px]"
-                >
+              {partners.map((partner, index) => <div key={index} className="bg-white rounded-xl px-8 py-6 shadow-sm border border-gray-100 flex items-center justify-center min-w-[200px]">
                   <span className="text-navy font-bold">{partner}</span>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </div>
@@ -236,10 +196,7 @@ const About = () => {
             <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
               Join thousands of Bitcoin holders who are already earning passive income.
             </p>
-            <Button 
-              size="lg"
-              className="bg-white text-bitcoin hover:bg-gray-100 font-medium px-8"
-            >
+            <Button size="lg" className="bg-white text-bitcoin hover:bg-gray-100 font-medium px-8">
               Start Earning Bitcoin →
             </Button>
           </div>
@@ -247,8 +204,6 @@ const About = () => {
       </main>
       
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default About;
