@@ -3,10 +3,16 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import WalletOverview from "@/components/WalletOverview";
 import TransactionHistory from "@/components/TransactionHistory";
+import StakingPanel from "@/components/StakingPanel";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import DepositBtcModal from "@/components/DepositBtcModal";
+import WithdrawBtcModal from "@/components/WithdrawBtcModal";
 
 const Dashboard = () => {
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex flex-col bg-[#00030B]">
       <Navbar />
@@ -37,17 +43,37 @@ const Dashboard = () => {
           <WalletOverview />
           
           <div className="mt-6 flex gap-3">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6">
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+              onClick={() => setIsDepositModalOpen(true)}
+            >
               <ArrowDown className="mr-2 h-4 w-4" />
               Deposit BTC
             </Button>
-            <Button variant="outline" className="border-gray-700 hover:bg-gray-800 text-white px-6">
+            <Button 
+              variant="outline" 
+              className="border-gray-700 hover:bg-gray-800 text-white px-6"
+              onClick={() => setIsWithdrawModalOpen(true)}
+            >
               <ArrowUp className="mr-2 h-4 w-4" />
               Withdraw BTC
             </Button>
           </div>
           
           <TransactionHistory />
+          
+          <StakingPanel />
+          
+          {/* Modals */}
+          <DepositBtcModal 
+            isOpen={isDepositModalOpen} 
+            onClose={() => setIsDepositModalOpen(false)} 
+          />
+          
+          <WithdrawBtcModal 
+            isOpen={isWithdrawModalOpen} 
+            onClose={() => setIsWithdrawModalOpen(false)} 
+          />
         </div>
       </main>
     </div>
