@@ -1,10 +1,11 @@
 
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const cryptoCoins = [
   {
     name: "Bitcoin (BTC)",
-    logo: "₿",
+    logo: "/lovable-uploads/7066c7d4-f90b-46b4-b31e-d7a96e2a4e55.png",
     apy: "3.1%",
     color: "orange",
     locked: "Instant",
@@ -13,7 +14,7 @@ const cryptoCoins = [
   },
   {
     name: "FrogCoin (FROG)",
-    logo: "🐸",
+    logo: "/lovable-uploads/1b68dc84-8be2-4108-801f-48d3f94afa12.png",
     apy: "9.2%",
     color: "green",
     locked: "1 week",
@@ -22,7 +23,7 @@ const cryptoCoins = [
   },
   {
     name: "Avalanche (AVAX)",
-    logo: "🔺",
+    logo: "/lovable-uploads/6b3593db-5bd8-4719-bdc5-ad6abad90a39.png",
     apy: "5.29%",
     color: "red",
     locked: "Instant",
@@ -31,7 +32,7 @@ const cryptoCoins = [
   },
   {
     name: "Cardano (ADA)",
-    logo: "₳",
+    logo: "/lovable-uploads/935cdec7-3d7f-4bb5-a2be-48c921527778.png",
     apy: "5.23%",
     color: "blue",
     locked: "1 week",
@@ -40,7 +41,7 @@ const cryptoCoins = [
   },
   {
     name: "Jasmy (JASMY)",
-    logo: "🟠",
+    logo: "/lovable-uploads/6b3593db-5bd8-4719-bdc5-ad6abad90a39.png",
     apy: "6.20%",
     color: "orange",
     locked: "3 days",
@@ -49,7 +50,7 @@ const cryptoCoins = [
   },
   {
     name: "Stem Token (STEM)",
-    logo: "💲",
+    logo: "/lovable-uploads/5f032bcf-8609-482e-a9af-b54ef7e2a25d.png",
     apy: "8.37%",
     color: "green",
     locked: "7 days",
@@ -75,7 +76,7 @@ const FeatureSection = () => {
               <div className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className={`w-12 h-12 flex items-center justify-center rounded-full ${coin.color === 'orange' ? 'orange-glow' : coin.color === 'green' ? 'green-glow' : coin.color === 'red' ? 'red-glow' : 'blue-glow'} bg-gradient-to-br ${coin.color === 'orange' ? 'from-yellow-600 to-orange-500' : coin.color === 'green' ? 'from-green-500 to-teal-500' : coin.color === 'red' ? 'from-red-500 to-pink-600' : 'from-blue-600 to-indigo-700'}`}>
-                    <span className="text-2xl">{coin.logo}</span>
+                    <img src={coin.logo} alt={coin.name} className="w-full h-full rounded-full" />
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-white">{coin.name}</h3>

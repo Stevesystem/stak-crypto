@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -82,8 +83,8 @@ const HeroSection = () => {
             <div className="h-16 w-px bg-gray-800/70 hidden md:block"></div>
             
             <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-card/80 border-4 border-bitcoin orange-glow mx-auto mb-2">
-                <span className="text-2xl">₿</span>
+              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-card/80 border-4 border-bitcoin mx-auto mb-2 orange-glow">
+                <img src="/lovable-uploads/7066c7d4-f90b-46b4-b31e-d7a96e2a4e55.png" alt="Bitcoin" className="w-full h-full rounded-full" />
               </div>
               <p className="text-sm text-gray-400">Bitcoin (BTC)</p>
               <p className="text-lg font-bold text-white">3.1%-7.5%</p>
@@ -96,7 +97,7 @@ const HeroSection = () => {
               <div className="flex items-center">
                 <span className="text-sm text-gray-400 mr-2">Audited by</span>
                 <div className="px-3 py-1.5 bg-gray-800/80 rounded-full flex items-center">
-                  <span className="text-yellow-500 mr-1.5">🪙</span>
+                  <img src="/lovable-uploads/1b68dc84-8be2-4108-801f-48d3f94afa12.png" alt="FrogCoin" className="w-5 h-5 mr-1.5" />
                   <span className="font-medium text-white">FrogCoin</span>
                 </div>
               </div>

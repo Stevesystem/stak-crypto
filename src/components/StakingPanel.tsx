@@ -1,7 +1,6 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Bitcoin } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 const StakingPanel = () => {
@@ -27,7 +26,7 @@ const StakingPanel = () => {
             <div>
               <p className="text-sm text-gray-500 mb-1">Staked BTC</p>
               <div className="flex items-center">
-                <Bitcoin size={20} className="text-bitcoin mr-2" />
+                <img src="/lovable-uploads/7066c7d4-f90b-46b4-b31e-d7a96e2a4e55.png" alt="Bitcoin" className="w-5 h-5 mr-2" />
                 <span className="text-xl font-bold">0.8500</span>
               </div>
               <p className="text-xs text-gray-500">≈ $59,063.29 USD</p>
@@ -40,7 +39,7 @@ const StakingPanel = () => {
             <div>
               <p className="text-sm text-gray-500 mb-1">Pending Rewards</p>
               <div className="flex items-center">
-                <Bitcoin size={20} className="text-bitcoin mr-2" />
+                <img src="/lovable-uploads/7066c7d4-f90b-46b4-b31e-d7a96e2a4e55.png" alt="Bitcoin" className="w-5 h-5 mr-2" />
                 <span className="text-xl font-bold">0.0015</span>
               </div>
               <p className="text-xs text-gray-500">≈ $104.22 USD</p>

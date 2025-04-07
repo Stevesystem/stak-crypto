@@ -1,6 +1,6 @@
 
 import { Card } from "@/components/ui/card";
-import { Bitcoin, ArrowUp, CreditCard, DollarSign } from "lucide-react";
+import { ArrowUp, CreditCard, DollarSign } from "lucide-react";
 
 const WalletOverview = () => {
   return (
@@ -64,7 +64,7 @@ const WalletOverview = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <Bitcoin className="h-5 w-5 mr-2 text-bitcoin" />
+                <img src="/lovable-uploads/7066c7d4-f90b-46b4-b31e-d7a96e2a4e55.png" alt="Bitcoin" className="h-5 w-5 mr-2" />
                 <div>
                   <p className="font-medium">Bitcoin</p>
                   <p className="text-xs text-gray-400">BTC</p>
@@ -78,15 +78,12 @@ const WalletOverview = () => {
             
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="h-5 w-5 mr-2 text-blue-500">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-5">
-                    <path d="M12 2L2 12.5L12 16L22 12.5L12 2Z" fill="currentColor" />
-                    <path d="M2 13.5L12 17L22 13.5L12 22L2 13.5Z" fill="currentColor" fillOpacity="0.7" />
-                  </svg>
+                <div className="h-5 w-5 mr-2">
+                  <img src="/lovable-uploads/935cdec7-3d7f-4bb5-a2be-48c921527778.png" alt="Cardano" className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-medium">Ethereum</p>
-                  <p className="text-xs text-gray-400">ETH</p>
+                  <p className="font-medium">Cardano</p>
+                  <p className="text-xs text-gray-400">ADA</p>
                 </div>
               </div>
               <div className="text-right">
