@@ -3,6 +3,15 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,13 +31,36 @@ const Navbar = () => {
             </Link>
           </div>
           
-          <div>
-            <Button variant="ghost" className="text-gray-300 hover:text-white">
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
-            </Button>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <Link to="/">
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Home
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link to="/about">
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      About Us
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link to="/dashboard">
+                    <Button className="bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-600 text-white font-medium px-6 ml-4">
+                      Start Staking
+                    </Button>
+                  </Link>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
           
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -60,6 +92,36 @@ const Navbar = () => {
             </button>
           </div>
         </div>
+        
+        {/* Mobile Navigation Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t border-gray-800">
+            <div className="flex flex-col space-y-4">
+              <Link 
+                to="/" 
+                className="text-gray-300 hover:text-white px-4 py-2 rounded hover:bg-gray-800"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link 
+                to="/about" 
+                className="text-gray-300 hover:text-white px-4 py-2 rounded hover:bg-gray-800"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                About Us
+              </Link>
+              <Link 
+                to="/dashboard" 
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Button className="bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-600 text-white font-medium w-full">
+                  Start Staking
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
