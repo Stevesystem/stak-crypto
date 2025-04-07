@@ -44,7 +44,7 @@ const About = () => {
       
       <main className="flex-grow mt-16">
         {/* Hero Section */}
-        <div className="py-20 bg-navy text-white">
+        <div className="py-20 text-white bg-inherit">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="inline-block p-3 rounded-full bg-bitcoin/20 mb-6">
               <Bitcoin size={32} className="text-bitcoin" />
@@ -61,19 +61,19 @@ const About = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row gap-12 items-center">
               <div className="md:w-1/2">
-                <h2 className="text-3xl md:text-4xl font-bold text-navy mb-6">Our Story</h2>
-                <p className="text-lg text-gray-700 mb-4">Launched in 2022 by a team of Bitcoin advocates and security experts, Bitcoin Yield Forge was born from a simple vision: to create a platform where anyone can earn passive income from their Bitcoin without compromising on security or liquidity.</p>
-                <p className="text-lg text-gray-700 mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-50">Our Story</h2>
+                <p className="text-lg mb-4 text-slate-50">Launched in 2022 by a team of Bitcoin advocates and security experts, Bitcoin Yield Forge was born from a simple vision: to create a platform where anyone can earn passive income from their Bitcoin without compromising on security or liquidity.</p>
+                <p className="text-lg mb-4 text-slate-50">
                   We noticed that many existing yield platforms were either too complex for average users, had lengthy lock-up periods, or worse – took dangerous risks with customer funds. We built Bitcoin Yield Forge to solve these problems.
                 </p>
-                <p className="text-lg text-gray-700">
+                <p className="text-lg text-slate-50">
                   Today, we're proud to serve thousands of Bitcoin holders worldwide, helping them earn consistent returns while maintaining full control of their assets.
                 </p>
               </div>
               <div className="md:w-1/2">
-                <div className="bg-gray-100 rounded-xl p-8 border-l-4 border-bitcoin">
-                  <h3 className="text-2xl font-bold text-navy mb-4">Our Mission</h3>
-                  <p className="text-xl text-gray-700 italic">
+                <div className="rounded-xl p-8 border-l-4 border-bitcoin bg-blue-900">
+                  <h3 className="text-2xl font-bold mb-4 text-slate-50">Our Mission</h3>
+                  <p className="text-xl italic text-slate-50">
                     "Empowering Bitcoin holders to grow their holdings with zero effort, maximum security, and complete peace of mind."
                   </p>
                 </div>
@@ -102,24 +102,24 @@ const About = () => {
         </div>
         
         {/* Team Section */}
-        <div className="py-16 md:py-24 bg-gray-50">
+        <div className="py-16 md:py-24 bg-inherit">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">Meet Our Team</h2>
-              <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-50">Meet Our Team</h2>
+              <p className="text-lg max-w-3xl mx-auto text-slate-50">
                 Our leadership team brings decades of combined experience in Bitcoin, security, and financial technology.
               </p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {team.map((member, index) => <div key={index} className="bg-white rounded-xl p-6 shadow-md flex flex-col items-center text-center">
+              {team.map((member, index) => <div key={index} className="rounded-xl p-6 shadow-md flex flex-col items-center text-center bg-navy-light">
                   <Avatar className="h-24 w-24 mb-4">
                     <AvatarImage src="" alt={member.name} />
                     <AvatarFallback className="bg-bitcoin text-white text-xl">{member.avatar}</AvatarFallback>
                   </Avatar>
-                  <h3 className="text-xl font-bold text-navy">{member.name}</h3>
+                  <h3 className="text-xl font-bold text-slate-50">{member.name}</h3>
                   <p className="text-bitcoin font-medium mb-4">{member.role}</p>
-                  <p className="text-gray-600 text-sm">{member.bio}</p>
+                  <p className="text-sm text-slate-50">{member.bio}</p>
                 </div>)}
             </div>
           </div>
@@ -129,19 +129,19 @@ const About = () => {
         <div className="py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <div className="inline-block p-3 rounded-full bg-navy/10 mb-4">
+              <div className="inline-block p-3 rounded-full mb-4 bg-[50] bg-zinc-50">
                 <Shield size={32} className="text-navy" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">Security Deep Dive</h2>
-              <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-100">Security Deep Dive</h2>
+              <p className="text-lg max-w-3xl mx-auto text-slate-50">
                 We've implemented institutional-grade security measures to ensure your Bitcoin remains safe at all times.
               </p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              {securityMeasures.map((measure, index) => <div key={index} className="bg-white rounded-xl p-6 shadow-md border-l-4 border-bitcoin">
-                  <h3 className="text-xl font-bold text-navy mb-2">{measure.title}</h3>
-                  <p className="text-gray-600">{measure.description}</p>
+              {securityMeasures.map((measure, index) => <div key={index} className="rounded-xl p-6 shadow-md border-l-4 border-bitcoin bg-navy-light">
+                  <h3 className="text-xl font-bold mb-2 text-slate-50">{measure.title}</h3>
+                  <p className="text-slate-50">{measure.description}</p>
                 </div>)}
             </div>
             
@@ -170,25 +170,25 @@ const About = () => {
         </div>
         
         {/* Partners Section */}
-        <div className="py-16 md:py-24 bg-gray-50">
+        <div className="py-16 md:py-24 bg-inherit">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">Press & Partnerships</h2>
-              <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-50">Press & Partnerships</h2>
+              <p className="text-lg max-w-3xl mx-auto text-slate-100">
                 We're proud to work with the top organizations in the Bitcoin ecosystem.
               </p>
             </div>
             
             <div className="flex flex-wrap justify-center gap-8">
-              {partners.map((partner, index) => <div key={index} className="bg-white rounded-xl px-8 py-6 shadow-sm border border-gray-100 flex items-center justify-center min-w-[200px]">
-                  <span className="text-navy font-bold">{partner}</span>
+              {partners.map((partner, index) => <div key={index} className="rounded-xl px-8 py-6 shadow-sm border border-gray-100 flex items-center justify-center min-w-[200px] bg-navy-light">
+                  <span className="font-bold text-slate-50">{partner}</span>
                 </div>)}
             </div>
           </div>
         </div>
         
         {/* Final CTA */}
-        <div className="py-16 md:py-24 btc-gradient">
+        <div className="py-16 md:py-24 btc-gradient bg-inherit">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
               Ready to Grow Your Bitcoin?
@@ -196,7 +196,7 @@ const About = () => {
             <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
               Join thousands of Bitcoin holders who are already earning passive income.
             </p>
-            <Button size="lg" className="bg-white text-bitcoin hover:bg-gray-100 font-medium px-8">
+            <Button size="lg" className="font-medium px-8 text-slate-50 bg-blue-700 hover:bg-blue-600">
               Start Earning Bitcoin →
             </Button>
           </div>
