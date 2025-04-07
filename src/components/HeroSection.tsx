@@ -1,7 +1,9 @@
 
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { removeBackground, loadImage } from '@/utils/imageProcessing';
 
 const supportedCoins = [
   { name: "TERA", logo: "🔷", apy: "5.6%" },
@@ -11,6 +13,22 @@ const supportedCoins = [
 ];
 
 const HeroSection = () => {
+  const [backgroundImage, setBackgroundImage] = useState('/lovable-uploads/5653e020-dfaa-4b7c-9681-9baeaf4de1db.png');
+
+  useEffect(() => {
+    const processImage = async () => {
+      try {
+        const image = await loadImage(backgroundImage);
+        const processedImage = await removeBackground(image);
+        setBackgroundImage(processedImage);
+      } catch (error) {
+        console.error('Failed to process image:', error);
+      }
+    };
+
+    processImage();
+  }, []);
+
   return (
     <div className="relative py-12 md:py-16 lg:py-24 overflow-hidden bg-[#00030B]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -18,7 +36,7 @@ const HeroSection = () => {
           <div className="w-full lg:w-1/2 mb-8 lg:mb-0 order-2 lg:order-1">
             <div className="relative">
               <img 
-                src="/lovable-uploads/5653e020-dfaa-4b7c-9681-9baeaf4de1db.png" 
+                src={backgroundImage} 
                 alt="Crypto Crystal Prism" 
                 className="w-full h-auto object-cover rounded-2xl"
               />
