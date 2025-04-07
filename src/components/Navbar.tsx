@@ -50,7 +50,7 @@ const Navbar = () => {
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link to="/dashboard">
+                  <Link to="/signin">
                     <Button className="bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-600 text-white font-medium px-6 ml-4">
                       Start Staking
                     </Button>
@@ -112,7 +112,7 @@ const Navbar = () => {
                 About Us
               </Link>
               <Link 
-                to="/dashboard" 
+                to="/signin" 
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Button className="bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-600 text-white font-medium w-full">
