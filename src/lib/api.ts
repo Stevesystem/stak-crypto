@@ -52,28 +52,43 @@ export const getUserTransactions = async (userId: string) => {
 
 // Auth Functions
 export const signUp = async (email: string, password: string, username: string, wallet_address: string) => {
-  // Sign up the user
-  const { data: authData, error: authError } = await supabase.auth.signUp({
-    email,
-    password,
-  })
-  
-  if (authError) throw authError
-
-  // Create user profile
-  if (authData.user) {
-    const { data: profileData, error: profileError } = await supabase
-      .from('user_profiles')
-      .insert({
-        id: authData.user.id,
-        email,
-        username,
-        wallet_address
-      })
-      .select()
-      .single()
+  try {
+    // Sign up the user
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+    })
     
-    if (profileError) throw profileError
-    return profileData
+    if (authError) {
+      console.error('Auth Error:', authError)
+      throw authError
+    }
+
+    console.log('Auth Success:', authData)
+
+    // Create user profile
+    if (authData.user) {
+      const { data: profileData, error: profileError } = await supabase
+        .from('user_profiles')
+        .insert({
+          id: authData.user.id,
+          email,
+          username,
+          wallet_address
+        })
+        .select()
+        .single()
+      
+      if (profileError) {
+        console.error('Profile Error:', profileError)
+        throw profileError
+      }
+
+      console.log('Profile Created:', profileData)
+      return profileData
+    }
+  } catch (error) {
+    console.error('Signup Error:', error)
+    throw error
   }
 }
