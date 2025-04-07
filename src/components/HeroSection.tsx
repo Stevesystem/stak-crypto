@@ -33,7 +33,7 @@ const HeroSection = () => {
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-              Turn Your Crypto Into huge <br />
+              Turn Your Crypto Into <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400 glow-text">Passive Income</span>
             </h1>
             
