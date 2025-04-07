@@ -49,7 +49,7 @@ const About = () => {
             <div className="inline-block p-3 rounded-full bg-bitcoin/20 mb-6">
               <Bitcoin size={32} className="text-bitcoin" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">About Bitcoin Yield Forge</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">About Bitcoin STAK Crypto</h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto">
               We're on a mission to help Bitcoin holders grow their holdings through secure, transparent staking solutions.
             </p>
@@ -62,10 +62,8 @@ const About = () => {
             <div className="flex flex-col md:flex-row gap-12 items-center">
               <div className="md:w-1/2">
                 <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-50">Our Story</h2>
-                <p className="text-lg mb-4 text-slate-50">Launched in 2022 by a team of Bitcoin advocates and security experts, Bitcoin Yield Forge was born from a simple vision: to create a platform where anyone can earn passive income from their Bitcoin without compromising on security or liquidity.</p>
-                <p className="text-lg mb-4 text-slate-50">
-                  We noticed that many existing yield platforms were either too complex for average users, had lengthy lock-up periods, or worse – took dangerous risks with customer funds. We built Bitcoin Yield Forge to solve these problems.
-                </p>
+                <p className="text-lg mb-4 text-slate-50">Launched in 2022 by a team of Bitcoin advocates and security experts, Bitcoin Stak Crypto was born from a simple vision: to create a platform where anyone can earn passive income from their Bitcoin without compromising on security or liquidity.</p>
+                <p className="text-lg mb-4 text-slate-50">We noticed that many existing yield platforms were either too complex for average users, had lengthy lock-up periods, or worse – took dangerous risks with customer funds. We built Bitcoin Stak Crypto to solve these problems.</p>
                 <p className="text-lg text-slate-50">
                   Today, we're proud to serve thousands of Bitcoin holders worldwide, helping them earn consistent returns while maintaining full control of their assets.
                 </p>
@@ -180,7 +178,7 @@ const About = () => {
             </div>
             
             <div className="flex flex-wrap justify-center gap-8">
-              {partners.map((partner, index) => <div key={index} className="rounded-xl px-8 py-6 shadow-sm border border-gray-100 flex items-center justify-center min-w-[200px] bg-navy-light">
+              {partners.map((partner, index) => <div key={index} className="rounded-xl px-8 py-6 shadow-sm border border-gray-100 flex items-center justify-center min-w-[200px] bg-blue-950">
                   <span className="font-bold text-slate-50">{partner}</span>
                 </div>)}
             </div>
