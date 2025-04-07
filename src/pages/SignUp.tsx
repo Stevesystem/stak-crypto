@@ -4,188 +4,137 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { Mail, User, KeyRound, Eye, EyeOff } from "lucide-react";
-import Navbar from "@/components/Navbar";
-
-const formSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  email: z.string().email({ message: "Please enter a valid email address" }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters" }),
-  termsAccepted: z.boolean().refine(val => val === true, {
-    message: "You must accept the terms and conditions",
-  }),
-});
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/lib/supabase";
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      termsAccepted: false,
-    },
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    terms: false
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Here you would typically connect to your authentication service
-    console.log("Sign up values:", values);
-    
-    // For demo purposes, we'll just show a success toast and navigate to dashboard
-    toast.success("Account created successfully!");
-    setTimeout(() => navigate("/dashboard"), 1500);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.terms) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please accept the terms and conditions"
+      });
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            full_name: formData.fullName
+          }
+        }
+      });
+      
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "Account created successfully"
+      });
+      navigate("/dashboard");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#00030B]">
-      <Navbar />
-      <div className="flex justify-center items-center px-4 py-16 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md">
-          <div className="bg-gray-900 p-8 rounded-xl border border-gray-800 shadow-xl">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white">Create an account</h2>
-              <p className="text-gray-400 mt-2">Join STAK and start your staking journey</p>
+      <nav className="flex justify-between items-center p-4">
+        <div className="text-2xl font-bold text-blue-500">STAK</div>
+        <div className="flex gap-4 items-center">
+          <Link to="/" className="text-white">Home</Link>
+          <Link to="/about" className="text-white">About Us</Link>
+          <Button className="bg-blue-500">Start Staking</Button>
+        </div>
+      </nav>
+
+      <div className="flex items-center justify-center mt-20">
+        <div className="w-full max-w-md p-8 bg-[#0B1120] rounded-2xl">
+          <h1 className="text-2xl font-bold text-white text-center">Create an account</h1>
+          <p className="text-gray-400 text-center mb-6">Join STAK and start your staking journey</p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-gray-400">Full Name</label>
+              <Input 
+                type="text" 
+                placeholder="Enter your full name"
+                className="bg-[#1A2333] border-gray-700"
+                value={formData.fullName}
+                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                required
+              />
             </div>
-            
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-300">Full Name</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <User className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                          <Input 
-                            placeholder="Enter your full name" 
-                            className="pl-10 bg-gray-800 border-gray-700 text-white" 
-                            {...field} 
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-300">Email</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                          <Input 
-                            placeholder="Enter your email" 
-                            className="pl-10 bg-gray-800 border-gray-700 text-white" 
-                            {...field} 
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-300">Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <KeyRound className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                          <Input 
-                            type={showPassword ? "text" : "password"} 
-                            placeholder="Create a password" 
-                            className="pl-10 pr-10 bg-gray-800 border-gray-700 text-white" 
-                            {...field} 
-                          />
-                          <button 
-                            type="button"
-                            className="absolute right-3 top-3 text-gray-500"
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? (
-                              <EyeOff className="h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
-                          </button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="termsAccepted"
-                  render={({ field }) => (
-                    <FormItem className="flex items-start space-x-2 space-y-0">
-                      <FormControl>
-                        <Checkbox 
-                          checked={field.value} 
-                          onCheckedChange={field.onChange}
-                          className="data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500 mt-1"
-                        />
-                      </FormControl>
-                      <div className="space-y-1">
-                        <FormLabel className="text-sm text-gray-400 font-normal cursor-pointer">
-                          I agree to the{" "}
-                          <Link to="/terms" className="text-blue-500 hover:text-blue-400">
-                            Terms of Service
-                          </Link>{" "}
-                          and{" "}
-                          <Link to="/privacy" className="text-blue-500 hover:text-blue-400">
-                            Privacy Policy
-                          </Link>
-                        </FormLabel>
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                
-                <Button 
-                  type="submit" 
-                  className="w-full bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-600 text-white mt-6"
-                >
-                  Create Account
-                </Button>
-                
-                <div className="text-center mt-6">
-                  <p className="text-gray-400 text-sm">
-                    Already have an account?{" "}
-                    <Link to="/signin" className="text-blue-500 hover:text-blue-400 font-medium">
-                      Sign in
-                    </Link>
-                  </p>
-                </div>
-              </form>
-            </Form>
-          </div>
+
+            <div className="space-y-2">
+              <label className="text-gray-400">Email</label>
+              <Input 
+                type="email" 
+                placeholder="Enter your email"
+                className="bg-[#1A2333] border-gray-700"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-gray-400">Password</label>
+              <Input 
+                type="password" 
+                placeholder="Create a password"
+                className="bg-[#1A2333] border-gray-700"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                required
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Checkbox 
+                id="terms" 
+                checked={formData.terms}
+                onCheckedChange={(checked) => setFormData({ ...formData, terms: checked as boolean })}
+              />
+              <label htmlFor="terms" className="text-sm text-gray-400">
+                I agree to the <Link to="/terms" className="text-blue-500">Terms of Service</Link> and{" "}
+                <Link to="/privacy" className="text-blue-500">Privacy Policy</Link>
+              </label>
+            </div>
+
+            <Button 
+              type="submit" 
+              className="w-full bg-blue-500"
+              disabled={loading}
+            >
+              {loading ? "Creating Account..." : "Create Account"}
+            </Button>
+
+            <p className="text-center text-gray-400">
+              Already have an account? <Link to="/signin" className="text-blue-500">Sign in</Link>
+            </p>
+          </form>
         </div>
       </div>
     </div>

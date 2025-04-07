@@ -1,162 +1,63 @@
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { Mail, KeyRound, Eye, EyeOff } from "lucide-react";
-import Navbar from "@/components/Navbar";
-
-const formSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address" }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters" }),
-  rememberMe: z.boolean().default(false),
-});
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
-  const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      rememberMe: false,
-    },
-  });
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Here you would typically connect to your authentication service
-    console.log("Sign in values:", values);
-    
-    // For demo purposes, we'll just show a success toast and navigate to dashboard
-    toast.success("Successfully signed in!");
-    setTimeout(() => navigate("/dashboard"), 1500);
-  };
-
   return (
     <div className="min-h-screen bg-[#00030B]">
-      <Navbar />
-      <div className="flex justify-center items-center px-4 py-24 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md">
-          <div className="bg-gray-900 p-8 rounded-xl border border-gray-800 shadow-xl">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white">Welcome back</h2>
-              <p className="text-gray-400 mt-2">Sign in to your STAK account</p>
+      <nav className="flex justify-between items-center p-4">
+        <div className="text-2xl font-bold text-blue-500">STAK</div>
+        <div className="flex gap-4 items-center">
+          <Link to="/" className="text-white">Home</Link>
+          <Link to="/about" className="text-white">About Us</Link>
+          <Button className="bg-blue-500">Start Staking</Button>
+        </div>
+      </nav>
+
+      <div className="flex items-center justify-center mt-20">
+        <div className="w-full max-w-md p-8 bg-[#0B1120] rounded-2xl">
+          <h1 className="text-2xl font-bold text-white text-center">Welcome back</h1>
+          <p className="text-gray-400 text-center mb-6">Sign in to your STAK account</p>
+
+          <form className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-gray-400">Email</label>
+              <Input 
+                type="email" 
+                placeholder="Enter your email"
+                className="bg-[#1A2333] border-gray-700"
+              />
             </div>
-            
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-300">Email</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                          <Input 
-                            placeholder="Enter your email" 
-                            className="pl-10 bg-gray-800 border-gray-700 text-white" 
-                            {...field} 
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-300">Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <KeyRound className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                          <Input 
-                            type={showPassword ? "text" : "password"} 
-                            placeholder="Enter your password" 
-                            className="pl-10 pr-10 bg-gray-800 border-gray-700 text-white" 
-                            {...field} 
-                          />
-                          <button 
-                            type="button"
-                            className="absolute right-3 top-3 text-gray-500"
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? (
-                              <EyeOff className="h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
-                          </button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <div className="flex items-center justify-between">
-                  <FormField
-                    control={form.control}
-                    name="rememberMe"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center space-x-2 space-y-0">
-                        <FormControl>
-                          <Checkbox 
-                            checked={field.value} 
-                            onCheckedChange={field.onChange}
-                            className="data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
-                          />
-                        </FormControl>
-                        <FormLabel className="text-sm text-gray-400 font-normal cursor-pointer">
-                          Remember me
-                        </FormLabel>
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <Link to="/reset-password" className="text-sm text-blue-500 hover:text-blue-400">
-                    Forgot password?
-                  </Link>
-                </div>
-                
-                <Button 
-                  type="submit" 
-                  className="w-full bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-600 text-white"
-                >
-                  Sign In
-                </Button>
-                
-                <div className="text-center mt-6">
-                  <p className="text-gray-400 text-sm">
-                    Don't have an account?{" "}
-                    <Link to="/signup" className="text-blue-500 hover:text-blue-400 font-medium">
-                      Sign up
-                    </Link>
-                  </p>
-                </div>
-              </form>
-            </Form>
-          </div>
+
+            <div className="space-y-2">
+              <label className="text-gray-400">Password</label>
+              <Input 
+                type="password" 
+                placeholder="Enter your password"
+                className="bg-[#1A2333] border-gray-700"
+              />
+            </div>
+
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Checkbox id="remember" />
+                <label htmlFor="remember" className="text-sm text-gray-400">Remember me</label>
+              </div>
+              <Link to="/forgot-password" className="text-sm text-blue-500">Forgot password?</Link>
+            </div>
+
+            <Button className="w-full bg-blue-500">Sign In</Button>
+
+            <p className="text-center text-gray-400">
+              Don't have an account? <Link to="/signup" className="text-blue-500">Sign up</Link>
+            </p>
+          </form>
         </div>
       </div>
     </div>
