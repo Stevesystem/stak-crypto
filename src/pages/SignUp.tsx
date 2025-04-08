@@ -5,16 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/lib/supabase";
+import { signUp } from "@/lib/api";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
+    username: "",
     email: "",
     password: "",
+    walletAddress: "",
     terms: false
   });
 
@@ -30,17 +31,12 @@ const SignUp = () => {
     }
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            full_name: formData.fullName
-          }
-        }
-      });
-      
-      if (error) throw error;
+      await signUp(
+        formData.email,
+        formData.password,
+        formData.username,
+        formData.walletAddress
+      );
 
       toast({
         title: "Success!",
@@ -76,13 +72,13 @@ const SignUp = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-gray-400">Full Name</label>
+              <label className="text-gray-400">Username</label>
               <Input 
                 type="text" 
-                placeholder="Enter your full name"
+                placeholder="Choose a username"
                 className="bg-[#1A2333] border-gray-700"
-                value={formData.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 required
               />
             </div>
@@ -107,6 +103,18 @@ const SignUp = () => {
                 className="bg-[#1A2333] border-gray-700"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-gray-400">BTC Wallet Address</label>
+              <Input 
+                type="text" 
+                placeholder="Enter your BTC wallet address"
+                className="bg-[#1A2333] border-gray-700"
+                value={formData.walletAddress}
+                onChange={(e) => setFormData({ ...formData, walletAddress: e.target.value })}
                 required
               />
             </div>

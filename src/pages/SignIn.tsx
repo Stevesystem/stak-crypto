@@ -1,14 +1,50 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    rememberMe: false
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password
+      });
+      
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "You have successfully signed in"
+      });
+      navigate("/dashboard");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#00030B]">
       <nav className="flex justify-between items-center p-4">
@@ -25,13 +61,16 @@ const SignIn = () => {
           <h1 className="text-2xl font-bold text-white text-center">Welcome back</h1>
           <p className="text-gray-400 text-center mb-6">Sign in to your STAK account</p>
 
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-gray-400">Email</label>
               <Input 
                 type="email" 
                 placeholder="Enter your email"
                 className="bg-[#1A2333] border-gray-700"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
               />
             </div>
 
@@ -41,18 +80,31 @@ const SignIn = () => {
                 type="password" 
                 placeholder="Enter your password"
                 className="bg-[#1A2333] border-gray-700"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                required
               />
             </div>
 
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <Checkbox id="remember" />
+                <Checkbox 
+                  id="remember" 
+                  checked={formData.rememberMe}
+                  onCheckedChange={(checked) => setFormData({ ...formData, rememberMe: checked as boolean })}
+                />
                 <label htmlFor="remember" className="text-sm text-gray-400">Remember me</label>
               </div>
               <Link to="/forgot-password" className="text-sm text-blue-500">Forgot password?</Link>
             </div>
 
-            <Button className="w-full bg-blue-500">Sign In</Button>
+            <Button 
+              type="submit" 
+              className="w-full bg-blue-500"
+              disabled={loading}
+            >
+              {loading ? "Signing in..." : "Sign In"}
+            </Button>
 
             <p className="text-center text-gray-400">
               Don't have an account? <Link to="/signup" className="text-blue-500">Sign up</Link>
