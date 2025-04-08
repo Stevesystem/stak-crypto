@@ -33,22 +33,24 @@ const SignUp = () => {
     setLoading(true);
     
     try {
+      console.log("Attempting signup with:", formData.email);
+      
       // Sign up the user
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
       });
       
-      if (authError) throw authError;
+      if (error) throw error;
       
-      console.log("Auth successful:", authData);
+      console.log("Auth successful:", data);
 
       // Create user profile
-      if (authData.user) {
+      if (data.user) {
         const { error: profileError } = await supabase
           .from('user_profiles')
           .insert({
-            id: authData.user.id,
+            id: data.user.id,
             email: formData.email,
             username: formData.username,
             wallet_address: formData.walletAddress
@@ -58,9 +60,9 @@ const SignUp = () => {
 
         toast({
           title: "Success!",
-          description: "Account created successfully"
+          description: "Account created successfully. Please check your email for verification."
         });
-        navigate("/dashboard");
+        navigate("/signin");
       }
     } catch (error: any) {
       console.error("Signup error:", error);
@@ -96,7 +98,7 @@ const SignUp = () => {
               <Input 
                 type="text" 
                 placeholder="Choose a username"
-                className="bg-[#1A2333] border-gray-700"
+                className="bg-[#1A2333] border-gray-700 text-white"
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 required
@@ -108,7 +110,7 @@ const SignUp = () => {
               <Input 
                 type="email" 
                 placeholder="Enter your email"
-                className="bg-[#1A2333] border-gray-700"
+                className="bg-[#1A2333] border-gray-700 text-white"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
@@ -120,7 +122,7 @@ const SignUp = () => {
               <Input 
                 type="password" 
                 placeholder="Create a password"
-                className="bg-[#1A2333] border-gray-700"
+                className="bg-[#1A2333] border-gray-700 text-white"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
@@ -132,7 +134,7 @@ const SignUp = () => {
               <Input 
                 type="text" 
                 placeholder="Enter your BTC wallet address"
-                className="bg-[#1A2333] border-gray-700"
+                className="bg-[#1A2333] border-gray-700 text-white"
                 value={formData.walletAddress}
                 onChange={(e) => setFormData({ ...formData, walletAddress: e.target.value })}
                 required

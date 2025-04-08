@@ -1,6 +1,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 
+// Use the configuration from .env file (most up-to-date)
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
@@ -12,7 +13,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   }
 })
 
-// Add this test function
+// Test function to verify connection
 export const testConnection = async () => {
   try {
     const { data, error } = await supabase.from('user_profiles').select('*').limit(1)

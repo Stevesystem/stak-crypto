@@ -25,6 +25,8 @@ const SignIn = () => {
     setLoading(true);
     
     try {
+      console.log("Attempting login with:", formData.email);
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password
@@ -72,7 +74,7 @@ const SignIn = () => {
               <Input 
                 type="email" 
                 placeholder="Enter your email"
-                className="bg-[#1A2333] border-gray-700"
+                className="bg-[#1A2333] border-gray-700 text-white"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
@@ -84,7 +86,7 @@ const SignIn = () => {
               <Input 
                 type="password" 
                 placeholder="Enter your password"
-                className="bg-[#1A2333] border-gray-700"
+                className="bg-[#1A2333] border-gray-700 text-white"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required

@@ -2,7 +2,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
-import { getUserProfile } from "@/lib/api";
 import type { UserProfile } from "@/types/database";
 
 interface AuthContextType {
@@ -59,10 +58,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUserProfile = async (userId: string) => {
     try {
-      const userProfile = await getUserProfile();
-      setProfile(userProfile);
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+      
+      if (error) {
+        console.error("Error fetching user profile:", error);
+        return;
+      }
+      
+      setProfile(data as UserProfile);
     } catch (error) {
-      console.error("Error fetching user profile:", error);
+      console.error("Error in fetchUserProfile:", error);
     }
   };
 
