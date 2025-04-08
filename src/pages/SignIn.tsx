@@ -45,7 +45,7 @@ const SignIn = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to sign in"
+        description: error.message || "Failed to sign in. Please check your credentials."
       });
     } finally {
       setLoading(false);

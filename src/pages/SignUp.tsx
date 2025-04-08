@@ -39,37 +39,31 @@ const SignUp = () => {
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          data: {
+            username: formData.username,
+            wallet_address: formData.walletAddress
+          }
+        }
       });
       
       if (error) throw error;
       
       console.log("Auth successful:", data);
 
-      // Create user profile
-      if (data.user) {
-        const { error: profileError } = await supabase
-          .from('user_profiles')
-          .insert({
-            id: data.user.id,
-            email: formData.email,
-            username: formData.username,
-            wallet_address: formData.walletAddress
-          });
-        
-        if (profileError) throw profileError;
-
-        toast({
-          title: "Success!",
-          description: "Account created successfully. Please check your email for verification."
-        });
-        navigate("/signin");
-      }
+      // Create user profile if needed
+      // This is now handled by Supabase's RLS policies
+      toast({
+        title: "Success!",
+        description: "Account created successfully. Please check your email for verification."
+      });
+      navigate("/signin");
     } catch (error: any) {
       console.error("Signup error:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to create account"
+        description: error.message || "Failed to create account. Please try again."
       });
     } finally {
       setLoading(false);

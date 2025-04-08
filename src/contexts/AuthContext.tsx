@@ -21,6 +21,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Test connection to Supabase
+    (async () => {
+      const result = await supabase.auth.getSession();
+      console.log("Initial Supabase session check:", result);
+    })();
+
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -58,17 +64,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUserProfile = async (userId: string) => {
     try {
+      console.log("Fetching profile for user:", userId);
       const { data, error } = await supabase
         .from('user_profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
       
       if (error) {
         console.error("Error fetching user profile:", error);
         return;
       }
       
+      console.log("Profile data:", data);
       setProfile(data as UserProfile);
     } catch (error) {
       console.error("Error in fetchUserProfile:", error);

@@ -1,9 +1,9 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-// Use the configuration from .env file (most up-to-date)
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+// Use the project URL and key from the Supabase integration
+const supabaseUrl = "https://fopkaqamuezrusuuiepy.supabase.co"
+const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvcGthcWFtdWV6cnVzdXVpZXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwOTU1ODMsImV4cCI6MjA1OTY3MTU4M30.QDEsp1vfOf6CnNYdox3CKEYBm7AtYAesq72cTFkLBak"
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -16,6 +16,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 // Test function to verify connection
 export const testConnection = async () => {
   try {
+    console.log("Testing Supabase connection to:", supabaseUrl)
     const { data, error } = await supabase.from('user_profiles').select('*').limit(1)
     if (error) {
       console.error('Connection Error:', error)
