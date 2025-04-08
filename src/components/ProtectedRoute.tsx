@@ -15,6 +15,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!user) {
+    // Save the attempted location for redirect after login
     return <Navigate to="/signin" state={{ from: location }} replace />;
   }
 

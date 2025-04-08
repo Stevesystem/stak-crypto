@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -10,6 +10,9 @@ import { useToast } from "@/components/ui/use-toast";
 const SignIn = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as any)?.from?.pathname || "/dashboard";
+  
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -29,16 +32,18 @@ const SignIn = () => {
       
       if (error) throw error;
 
+      console.log("Login successful:", data);
       toast({
         title: "Success!",
         description: "You have successfully signed in"
       });
-      navigate("/dashboard");
+      navigate(from);
     } catch (error: any) {
+      console.error("Login error:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message
+        description: error.message || "Failed to sign in"
       });
     } finally {
       setLoading(false);

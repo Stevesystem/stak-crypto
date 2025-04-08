@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
-import { signUp } from "@/lib/api";
+import { supabase } from "@/lib/supabase";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -29,25 +29,45 @@ const SignUp = () => {
       });
       return;
     }
+    
     setLoading(true);
+    
     try {
-      await signUp(
-        formData.email,
-        formData.password,
-        formData.username,
-        formData.walletAddress
-      );
-
-      toast({
-        title: "Success!",
-        description: "Account created successfully"
+      // Sign up the user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
       });
-      navigate("/dashboard");
+      
+      if (authError) throw authError;
+      
+      console.log("Auth successful:", authData);
+
+      // Create user profile
+      if (authData.user) {
+        const { error: profileError } = await supabase
+          .from('user_profiles')
+          .insert({
+            id: authData.user.id,
+            email: formData.email,
+            username: formData.username,
+            wallet_address: formData.walletAddress
+          });
+        
+        if (profileError) throw profileError;
+
+        toast({
+          title: "Success!",
+          description: "Account created successfully"
+        });
+        navigate("/dashboard");
+      }
     } catch (error: any) {
+      console.error("Signup error:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message
+        description: error.message || "Failed to create account"
       });
     } finally {
       setLoading(false);
