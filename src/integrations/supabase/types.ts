@@ -9,69 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      transaction_history: {
-        Row: {
-          amount: number | null
-          created_at: string | null
-          email: string | null
-          id: string
-          status: string | null
-          transaction_type: string | null
-          user_id: string | null
-          username: string | null
-          wallet_address: string | null
-        }
-        Insert: {
-          amount?: number | null
-          created_at?: string | null
-          email?: string | null
-          id?: string
-          status?: string | null
-          transaction_type?: string | null
-          user_id?: string | null
-          username?: string | null
-          wallet_address?: string | null
-        }
-        Update: {
-          amount?: number | null
-          created_at?: string | null
-          email?: string | null
-          id?: string
-          status?: string | null
-          transaction_type?: string | null
-          user_id?: string | null
-          username?: string | null
-          wallet_address?: string | null
-        }
-        Relationships: []
-      }
-      user_profiles: {
-        Row: {
-          created_at: string | null
-          email: string | null
-          id: string
-          updated_at: string | null
-          username: string | null
-          wallet_address: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          email?: string | null
-          id: string
-          updated_at?: string | null
-          username?: string | null
-          wallet_address?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          email?: string | null
-          id?: string
-          updated_at?: string | null
-          username?: string | null
-          wallet_address?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
