@@ -50,25 +50,31 @@ export type Database = {
           created_at: string | null
           email: string | null
           id: string
+          total_earnings: number | null
           updated_at: string | null
           username: string | null
           wallet_address: string | null
+          wallet_balance: number | null
         }
         Insert: {
           created_at?: string | null
           email?: string | null
           id: string
+          total_earnings?: number | null
           updated_at?: string | null
           username?: string | null
           wallet_address?: string | null
+          wallet_balance?: number | null
         }
         Update: {
           created_at?: string | null
           email?: string | null
           id?: string
+          total_earnings?: number | null
           updated_at?: string | null
           username?: string | null
           wallet_address?: string | null
+          wallet_balance?: number | null
         }
         Relationships: []
       }

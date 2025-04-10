@@ -33,6 +33,38 @@ export const createUserProfile = async (profile: Omit<UserProfile, 'created_at' 
   return data as UserProfile;
 };
 
+// Update user's wallet balance
+export const updateWalletBalance = async (userId: string, amount: number, isDeposit: boolean) => {
+  try {
+    // Get the current user profile
+    const { data: userProfile, error: fetchError } = await supabase
+      .from('user_profiles')
+      .select('wallet_balance')
+      .eq('id', userId)
+      .single();
+    
+    if (fetchError) throw fetchError;
+    
+    // Calculate the new balance
+    const currentBalance = userProfile.wallet_balance || 0;
+    const newBalance = isDeposit ? currentBalance + amount : currentBalance - amount;
+    
+    // Update the user's wallet balance
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .update({ wallet_balance: newBalance, updated_at: new Date().toISOString() })
+      .eq('id', userId)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data as UserProfile;
+  } catch (err) {
+    console.error('Failed to update wallet balance:', err);
+    throw err;
+  }
+};
+
 // Transaction History Functions
 export const createTransaction = async (transaction: Omit<TransactionHistory, 'id' | 'created_at'>) => {
   try {
@@ -47,6 +79,14 @@ export const createTransaction = async (transaction: Omit<TransactionHistory, 'i
       console.error('Error creating transaction:', error);
       throw error;
     }
+    
+    // If transaction status is completed and it's a deposit, update the wallet balance
+    if (transaction.status === 'completed' && transaction.transaction_type === 'deposit') {
+      await updateWalletBalance(transaction.user_id, transaction.amount, true);
+    } else if (transaction.status === 'completed' && transaction.transaction_type === 'withdrawal') {
+      await updateWalletBalance(transaction.user_id, transaction.amount, false);
+    }
+    
     console.log('Transaction created:', data);
     return data as TransactionHistory;
   } catch (err) {
@@ -73,6 +113,44 @@ export const getUserTransactions = async (userId: string) => {
     return data as TransactionHistory[];
   } catch (err) {
     console.error('Transaction fetch failed:', err);
+    throw err;
+  }
+};
+
+// Update a transaction's status
+export const updateTransactionStatus = async (transactionId: string, status: 'pending' | 'completed' | 'failed') => {
+  try {
+    // First get the transaction details
+    const { data: transactionData, error: fetchError } = await supabase
+      .from('transaction_history')
+      .select('*')
+      .eq('id', transactionId)
+      .single();
+    
+    if (fetchError) throw fetchError;
+    
+    // Update the transaction status
+    const { data, error } = await supabase
+      .from('transaction_history')
+      .update({ status })
+      .eq('id', transactionId)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    // If status changed to completed, update wallet balance
+    if (status === 'completed' && transactionData) {
+      if (transactionData.transaction_type === 'deposit') {
+        await updateWalletBalance(transactionData.user_id, transactionData.amount, true);
+      } else if (transactionData.transaction_type === 'withdrawal') {
+        await updateWalletBalance(transactionData.user_id, transactionData.amount, false);
+      }
+    }
+    
+    return data as TransactionHistory;
+  } catch (err) {
+    console.error('Failed to update transaction status:', err);
     throw err;
   }
 };

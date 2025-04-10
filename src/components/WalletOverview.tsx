@@ -1,8 +1,44 @@
 
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { ArrowUp, CreditCard, DollarSign } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { getUserProfile } from "@/lib/api";
 
 const WalletOverview = () => {
+  const [balance, setBalance] = useState(0);
+  const [earnings, setEarnings] = useState(0);
+  const { user } = useAuth();
+  
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        try {
+          const profile = await getUserProfile();
+          setBalance(profile.wallet_balance || 0);
+          setEarnings(profile.total_earnings || 0);
+        } catch (error) {
+          console.error("Failed to fetch wallet data:", error);
+        }
+      }
+    };
+    
+    fetchUserData();
+  }, [user]);
+  
+  // Format balance to BTC with 8 decimal places
+  const formatBtcAmount = (amount: number) => {
+    return amount.toFixed(8);
+  };
+  
+  // Format USD amount with 2 decimal places
+  const formatUsdAmount = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {/* Wallet Balance Card */}
@@ -14,12 +50,12 @@ const WalletOverview = () => {
             </div>
             <div>
               <p className="text-sm text-gray-400">Wallet Balance</p>
-              <p className="text-gray-400 text-xs">$0.00</p>
+              <p className="text-gray-400 text-xs">{formatUsdAmount(balance)}</p>
             </div>
           </div>
           
           <div className="mt-2 mb-2">
-            <h3 className="text-2xl md:text-3xl font-mono">0.00000000 BTC</h3>
+            <h3 className="text-2xl md:text-3xl font-mono">{formatBtcAmount(balance / 83000)} BTC</h3>
           </div>
         </div>
       </Card>
@@ -37,7 +73,7 @@ const WalletOverview = () => {
           </div>
           
           <div className="mt-2 mb-2">
-            <h3 className="text-2xl md:text-3xl font-mono">$0.00</h3>
+            <h3 className="text-2xl md:text-3xl font-mono">{formatUsdAmount(earnings)}</h3>
           </div>
           
           <div className="mt-2">
