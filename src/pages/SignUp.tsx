@@ -35,7 +35,7 @@ const SignUp = () => {
     try {
       console.log("Attempting signup with:", formData.email);
       
-      // Sign up the user
+      // Sign up the user with auto-confirm enabled
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -43,7 +43,8 @@ const SignUp = () => {
           data: {
             username: formData.username,
             wallet_address: formData.walletAddress
-          }
+          },
+          emailRedirectTo: window.location.origin + '/dashboard'
         }
       });
       
@@ -51,13 +52,21 @@ const SignUp = () => {
       
       console.log("Auth successful:", data);
 
-      // Create user profile if needed
-      // This is now handled by Supabase's RLS policies
-      toast({
-        title: "Success!",
-        description: "Account created successfully. Please check your email for verification."
-      });
-      navigate("/signin");
+      if (data.session) {
+        // If we have a session, user was auto-confirmed
+        toast({
+          title: "Success!",
+          description: "Account created successfully. You're now logged in!"
+        });
+        navigate("/dashboard");
+      } else {
+        // If no session, might still need confirmation
+        toast({
+          title: "Success!",
+          description: "Account created. You can now sign in."
+        });
+        navigate("/signin");
+      }
     } catch (error: any) {
       console.error("Signup error:", error);
       toast({

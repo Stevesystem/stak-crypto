@@ -29,10 +29,25 @@ const SignIn = () => {
       
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       });
       
-      if (error) throw error;
+      if (error) {
+        // Check if the error is about unconfirmed email
+        if (error.message?.includes("Email not confirmed")) {
+          // Try to resend confirmation email
+          await supabase.auth.resend({
+            type: 'signup',
+            email: formData.email,
+            options: {
+              emailRedirectTo: window.location.origin + '/dashboard'
+            }
+          });
+          
+          throw new Error("Your email is not confirmed. We've sent a new confirmation email.");
+        }
+        throw error;
+      }
 
       console.log("Login successful:", data);
       toast({

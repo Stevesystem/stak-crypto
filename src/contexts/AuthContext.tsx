@@ -29,15 +29,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log("Auth state changed:", event, session?.user?.email);
-        setSession(session);
-        setUser(session?.user ?? null);
+      async (event, newSession) => {
+        console.log("Auth state changed:", event, newSession?.user?.email);
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
         
         // If user is logged in, fetch their profile
-        if (session?.user) {
+        if (newSession?.user) {
+          // Use setTimeout to avoid deadlock
           setTimeout(() => {
-            fetchUserProfile(session.user.id);
+            fetchUserProfile(newSession.user.id);
           }, 0);
         } else {
           setProfile(null);
@@ -46,13 +47,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("Initial session check:", session?.user?.email);
-      setSession(session);
-      setUser(session?.user ?? null);
+    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
+      console.log("Initial session check:", initialSession?.user?.email);
+      setSession(initialSession);
+      setUser(initialSession?.user ?? null);
       
-      if (session?.user) {
-        fetchUserProfile(session.user.id);
+      if (initialSession?.user) {
+        fetchUserProfile(initialSession.user.id);
       }
       setLoading(false);
     });
@@ -77,7 +78,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       console.log("Profile data:", data);
-      setProfile(data as UserProfile);
+      
+      // If we don't have a profile yet, create one
+      if (!data) {
+        console.log("No profile found, creating one for user:", userId);
+        try {
+          const userData = await supabase.auth.getUser();
+          const userMetadata = userData.data.user?.user_metadata;
+          
+          const { data: newProfile, error: insertError } = await supabase
+            .from('user_profiles')
+            .insert({
+              id: userId,
+              email: userData.data.user?.email,
+              username: userMetadata?.username || '',
+              wallet_address: userMetadata?.wallet_address || ''
+            })
+            .select()
+            .single();
+            
+          if (insertError) {
+            console.error("Error creating user profile:", insertError);
+            return;
+          }
+          
+          console.log("New profile created:", newProfile);
+          setProfile(newProfile as UserProfile);
+        } catch (err) {
+          console.error("Error in profile creation:", err);
+        }
+      } else {
+        setProfile(data as UserProfile);
+      }
     } catch (error) {
       console.error("Error in fetchUserProfile:", error);
     }
