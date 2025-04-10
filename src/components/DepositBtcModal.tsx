@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Copy, Barcode } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { createTransaction } from "@/lib/api";
 
 type DepositBtcModalProps = {
   isOpen: boolean;
@@ -24,8 +25,9 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
   const [amount, setAmount] = useState<string>("");
   const [btcAmount, setBtcAmount] = useState<string>("0.00000000");
   const [walletAddress, setWalletAddress] = useState<string>("bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { profile } = useAuth();
+  const { user, profile } = useAuth();
 
   // Calculate BTC amount from USD (using a mock exchange rate)
   useEffect(() => {
@@ -44,13 +46,46 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
     });
   };
 
-  const handleDeposit = () => {
-    // Here you would handle the actual deposit logic
-    toast({
-      title: "BTC Deposited",
-      description: "Wait for Deposit confirmation.",
-    });
-    onClose();
+  const handleDeposit = async () => {
+    if (!user || !profile) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "You must be logged in to make a deposit",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Create a transaction record
+      await createTransaction({
+        user_id: user.id,
+        username: profile.username || '',
+        email: profile.email || '',
+        wallet_address: profile.wallet_address || '',
+        transaction_type: 'deposit',
+        amount: parseFloat(amount),
+        status: 'pending'
+      });
+
+      toast({
+        title: "BTC Deposit Initiated",
+        description: "Your deposit has been initiated. Wait for confirmation.",
+      });
+      
+      onClose();
+      setAmount("");
+    } catch (error) {
+      console.error("Deposit error:", error);
+      toast({
+        variant: "destructive",
+        title: "Deposit Failed",
+        description: "There was an error processing your deposit. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -121,15 +156,16 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
             variant="outline"
             onClick={onClose}
             className="border-gray-700 text-gray-300 hover:bg-gray-800"
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
           <Button 
             className="bg-blue-600 hover:bg-blue-700 text-white"
-            disabled={!amount || parseFloat(amount) <= 0}
+            disabled={!amount || parseFloat(amount) <= 0 || isSubmitting}
             onClick={handleDeposit}
           >
-            Deposit
+            {isSubmitting ? 'Processing...' : 'Deposit'}
           </Button>
         </DialogFooter>
       </DialogContent>

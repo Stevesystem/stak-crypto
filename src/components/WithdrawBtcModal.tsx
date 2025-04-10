@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { createTransaction } from "@/lib/api";
 
 type WithdrawBtcModalProps = {
   isOpen: boolean;
@@ -23,8 +24,9 @@ const WithdrawBtcModal = ({ isOpen, onClose }: WithdrawBtcModalProps) => {
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
   const [btcAmount, setBtcAmount] = useState<string>("0.00000000");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { profile } = useAuth();
+  const { user, profile } = useAuth();
   
   // Calculate BTC amount from USD (using a mock exchange rate)
   useEffect(() => {
@@ -35,13 +37,57 @@ const WithdrawBtcModal = ({ isOpen, onClose }: WithdrawBtcModalProps) => {
     setBtcAmount(btc.toFixed(8));
   }, [amount]);
 
-  const handleSubmit = () => {
-    // Here would be the logic to submit the withdrawal request
-    toast({
-      title: "Withdraw request accepted",
-      description: "Withdraw request is accepted and in process, kindly check your wallet balance to confirm the deposit.",
-    });
-    onClose();
+  // Use user's wallet address if available
+  useEffect(() => {
+    if (profile?.wallet_address) {
+      setWalletAddress(profile.wallet_address);
+    }
+  }, [profile]);
+
+  const handleSubmit = async () => {
+    if (!user || !profile) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "You must be logged in to make a withdrawal",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Create transaction record in the database
+      await createTransaction({
+        user_id: user.id,
+        username: profile.username || '',
+        email: profile.email || '',
+        wallet_address: walletAddress,
+        transaction_type: 'withdrawal',
+        amount: parseFloat(amount),
+        status: 'pending'
+      });
+
+      toast({
+        title: "Withdraw request accepted",
+        description: "Withdraw request is accepted and in process, kindly check your wallet balance to confirm the deposit.",
+      });
+      
+      onClose();
+      setAmount("");
+      // Only reset wallet address if it's not the user's default
+      if (walletAddress !== profile.wallet_address) {
+        setWalletAddress("");
+      }
+    } catch (error) {
+      console.error("Withdrawal error:", error);
+      toast({
+        variant: "destructive",
+        title: "Withdrawal Failed",
+        description: "There was an error processing your withdrawal. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isFormValid = walletAddress.trim() !== "" && 
@@ -104,15 +150,16 @@ const WithdrawBtcModal = ({ isOpen, onClose }: WithdrawBtcModalProps) => {
             variant="outline"
             onClick={onClose}
             className="border-gray-700 text-gray-300 hover:bg-gray-800"
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
           <Button 
             className="bg-blue-600 hover:bg-blue-700 text-white"
-            disabled={!isFormValid}
+            disabled={!isFormValid || isSubmitting}
             onClick={handleSubmit}
           >
-            Withdraw Request
+            {isSubmitting ? 'Processing...' : 'Withdraw Request'}
           </Button>
         </DialogFooter>
       </DialogContent>
