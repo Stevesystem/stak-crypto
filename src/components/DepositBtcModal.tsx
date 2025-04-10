@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Copy, Barcode } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 type DepositBtcModalProps = {
   isOpen: boolean;
@@ -24,6 +25,7 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
   const [btcAmount, setBtcAmount] = useState<string>("0.00000000");
   const [walletAddress, setWalletAddress] = useState<string>("bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh");
   const { toast } = useToast();
+  const { profile } = useAuth();
 
   // Calculate BTC amount from USD (using a mock exchange rate)
   useEffect(() => {
@@ -40,6 +42,15 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
       title: "Address copied!",
       description: "BTC wallet address copied to clipboard",
     });
+  };
+
+  const handleDeposit = () => {
+    // Here you would handle the actual deposit logic
+    toast({
+      title: "BTC Deposited",
+      description: "Wait for Deposit confirmation.",
+    });
+    onClose();
   };
 
   return (
@@ -116,6 +127,7 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
           <Button 
             className="bg-blue-600 hover:bg-blue-700 text-white"
             disabled={!amount || parseFloat(amount) <= 0}
+            onClick={handleDeposit}
           >
             Deposit
           </Button>

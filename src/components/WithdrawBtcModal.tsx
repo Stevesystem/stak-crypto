@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 type WithdrawBtcModalProps = {
   isOpen: boolean;
@@ -21,13 +22,24 @@ type WithdrawBtcModalProps = {
 const WithdrawBtcModal = ({ isOpen, onClose }: WithdrawBtcModalProps) => {
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
+  const [btcAmount, setBtcAmount] = useState<string>("0.00000000");
   const { toast } = useToast();
+  const { profile } = useAuth();
   
+  // Calculate BTC amount from USD (using a mock exchange rate)
+  useEffect(() => {
+    const usdAmount = parseFloat(amount) || 0;
+    // Mock exchange rate: 1 BTC = $83,000 USD
+    const exchangeRate = 83000;
+    const btc = usdAmount / exchangeRate;
+    setBtcAmount(btc.toFixed(8));
+  }, [amount]);
+
   const handleSubmit = () => {
     // Here would be the logic to submit the withdrawal request
     toast({
-      title: "Withdrawal requested",
-      description: `Requested withdrawal of ${amount} BTC to ${walletAddress}`,
+      title: "Withdraw request accepted",
+      description: "Withdraw request is accepted and in process, kindly check your wallet balance to confirm the deposit.",
     });
     onClose();
   };
@@ -60,22 +72,21 @@ const WithdrawBtcModal = ({ isOpen, onClose }: WithdrawBtcModalProps) => {
             />
           </div>
 
-          {/* Amount Input */}
+          {/* Amount Input (USD) */}
           <div className="space-y-2">
-            <Label htmlFor="withdraw-amount" className="text-gray-300">Amount (BTC)</Label>
+            <Label htmlFor="withdraw-amount-usd" className="text-gray-300">Amount (USD)</Label>
             <Input
-              id="withdraw-amount"
-              placeholder="0.00000000"
+              id="withdraw-amount-usd"
+              placeholder="0.00"
               type="number"
               min="0"
-              step="0.00000001"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               className="bg-gray-900 border-gray-800 text-white"
             />
-            <div className="text-xs text-gray-400">
-              <p>Available balance: 0.00000000 BTC</p>
-              <p className="mt-1">Minimum withdrawal: 0.00010000 BTC</p>
+            <div className="text-sm text-gray-400 flex justify-between">
+              <span>BTC Equivalent:</span>
+              <span className="font-mono">{btcAmount} BTC</span>
             </div>
           </div>
 
@@ -101,7 +112,7 @@ const WithdrawBtcModal = ({ isOpen, onClose }: WithdrawBtcModalProps) => {
             disabled={!isFormValid}
             onClick={handleSubmit}
           >
-            Request Withdrawal
+            Withdraw Request
           </Button>
         </DialogFooter>
       </DialogContent>
