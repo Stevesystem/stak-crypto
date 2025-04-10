@@ -17,7 +17,12 @@ export const getUserProfile = async () => {
   return data as UserProfile;
 };
 
-export const createUserProfile = async (profile: Omit<UserProfile, 'id' | 'created_at' | 'updated_at'>) => {
+export const createUserProfile = async (profile: Omit<UserProfile, 'created_at' | 'updated_at'>) => {
+  // The id is required for the user_profiles table
+  if (!profile.id) {
+    throw new Error('User ID is required to create a profile');
+  }
+
   const { data, error } = await supabase
     .from('user_profiles')
     .insert(profile)
