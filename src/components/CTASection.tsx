@@ -1,7 +1,13 @@
-
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const CTASection = () => {
+  const navigate = useNavigate();
+
+  const handleStartStaking = () => {
+    navigate("/signin");
+  };
+
   return (
     <div className="py-20 md:py-28 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-background to-blue-950/20 z-0"></div>
@@ -26,6 +32,7 @@ const CTASection = () => {
           <Button 
             size="lg"
             className="bg-primary hover:bg-primary/90 text-white font-medium px-8 blue-glow"
+            onClick={handleStartStaking}
           >
             Start Staking Now
           </Button>

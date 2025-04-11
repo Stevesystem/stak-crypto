@@ -1,6 +1,5 @@
-
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
 const supportedCoins = [
@@ -11,6 +10,12 @@ const supportedCoins = [
 ];
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+
+  const handleStartStaking = () => {
+    navigate("/signin");
+  };
+
   return (
     <div className="relative py-12 md:py-16 lg:py-24 overflow-hidden bg-[#00030B]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -55,6 +60,7 @@ const HeroSection = () => {
               <Button 
                 size="lg" 
                 className="bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-600 text-white font-medium px-8 transition-all shadow-lg shadow-primary/20 blue-glow"
+                onClick={handleStartStaking}
               >
                 Start Staking Now <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
