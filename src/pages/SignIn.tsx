@@ -5,32 +5,31 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
-
 const SignIn = () => {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as any)?.from?.pathname || "/dashboard";
-  
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     rememberMe: false
   });
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
     try {
       console.log("Attempting login with:", formData.email);
-      
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const {
+        data,
+        error
+      } = await supabase.auth.signInWithPassword({
         email: formData.email,
-        password: formData.password,
+        password: formData.password
       });
-      
       if (error) {
         // Check if the error is about unconfirmed email
         if (error.message?.includes("Email not confirmed")) {
@@ -42,12 +41,10 @@ const SignIn = () => {
               emailRedirectTo: window.location.origin + '/dashboard'
             }
           });
-          
           throw new Error("Your email is not confirmed. We've sent a new confirmation email.");
         }
         throw error;
       }
-
       console.log("Login successful:", data);
       toast({
         title: "Success!",
@@ -65,17 +62,11 @@ const SignIn = () => {
       setLoading(false);
     }
   };
-
-  return (
-    <div className="min-h-screen bg-[#00030B]">
+  return <div className="min-h-screen bg-[#00030B]">
       <nav className="flex justify-between items-center p-4">
         <div className="flex items-center">
-          <img 
-            src="/lovable-uploads/ec64f731-7100-4680-9a4e-63452c556547.png" 
-            alt="stake&earn Logo" 
-            className="h-8 w-8 mr-2" 
-          />
-          <div className="text-2xl font-bold text-blue-500">stake&earn</div>
+          <img src="/lovable-uploads/ec64f731-7100-4680-9a4e-63452c556547.png" alt="stake&earn Logo" className="h-8 w-8 mr-2" />
+          
         </div>
         <div className="flex gap-4 items-center">
           <Link to="/" className="text-white">Home</Link>
@@ -92,45 +83,32 @@ const SignIn = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-gray-400">Email</label>
-              <Input 
-                type="email" 
-                placeholder="Enter your email"
-                className="bg-[#1A2333] border-gray-700 text-white"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-              />
+              <Input type="email" placeholder="Enter your email" className="bg-[#1A2333] border-gray-700 text-white" value={formData.email} onChange={e => setFormData({
+              ...formData,
+              email: e.target.value
+            })} required />
             </div>
 
             <div className="space-y-2">
               <label className="text-gray-400">Password</label>
-              <Input 
-                type="password" 
-                placeholder="Enter your password"
-                className="bg-[#1A2333] border-gray-700 text-white"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                required
-              />
+              <Input type="password" placeholder="Enter your password" className="bg-[#1A2333] border-gray-700 text-white" value={formData.password} onChange={e => setFormData({
+              ...formData,
+              password: e.target.value
+            })} required />
             </div>
 
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <Checkbox 
-                  id="remember" 
-                  checked={formData.rememberMe}
-                  onCheckedChange={(checked) => setFormData({ ...formData, rememberMe: checked as boolean })}
-                />
+                <Checkbox id="remember" checked={formData.rememberMe} onCheckedChange={checked => setFormData({
+                ...formData,
+                rememberMe: checked as boolean
+              })} />
                 <label htmlFor="remember" className="text-sm text-gray-400">Remember me</label>
               </div>
               <Link to="/forgot-password" className="text-sm text-blue-500">Forgot password?</Link>
             </div>
 
-            <Button 
-              type="submit" 
-              className="w-full bg-blue-500"
-              disabled={loading}
-            >
+            <Button type="submit" className="w-full bg-blue-500" disabled={loading}>
               {loading ? "Signing in..." : "Sign In"}
             </Button>
 
@@ -140,8 +118,6 @@ const SignIn = () => {
           </form>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default SignIn;
