@@ -8,6 +8,17 @@ import { getUserProfile } from "@/lib/api";
 const WalletOverview = () => {
   const [balance, setBalance] = useState(0);
   const [earnings, setEarnings] = useState(0);
+  const [cryptoPrices, setCryptoPrices] = useState({
+    bitcoin: {
+      price: 0,
+      change: 0,
+    },
+    cardano: {
+      price: 0,
+      change: 0,
+    }
+  });
+  const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
   
   useEffect(() => {
@@ -26,6 +37,49 @@ const WalletOverview = () => {
     
     fetchUserData();
   }, [user]);
+  
+  useEffect(() => {
+    const fetchCryptoPrices = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(
+          "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,cardano&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h"
+        );
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch cryptocurrency prices");
+        }
+        
+        const data = await response.json();
+        
+        // Extract price data for Bitcoin and Cardano
+        const bitcoinData = data.find(coin => coin.id === "bitcoin");
+        const cardanoData = data.find(coin => coin.id === "cardano");
+        
+        setCryptoPrices({
+          bitcoin: {
+            price: bitcoinData?.current_price || 0,
+            change: bitcoinData?.price_change_percentage_24h || 0,
+          },
+          cardano: {
+            price: cardanoData?.current_price || 0,
+            change: cardanoData?.price_change_percentage_24h || 0,
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching cryptocurrency prices:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchCryptoPrices();
+    
+    // Refresh prices every 5 minutes
+    const intervalId = setInterval(fetchCryptoPrices, 5 * 60 * 1000);
+    
+    return () => clearInterval(intervalId);
+  }, []);
   
   // Format balance to BTC with 8 decimal places
   const formatBtcAmount = (amount: number) => {
@@ -56,7 +110,7 @@ const WalletOverview = () => {
           </div>
           
           <div className="mt-2 mb-2">
-            <h3 className="text-2xl md:text-3xl font-mono">{formatBtcAmount(balance / 83000)} BTC</h3>
+            <h3 className="text-2xl md:text-3xl font-mono">{formatBtcAmount(balance / (cryptoPrices.bitcoin.price || 1))} BTC</h3>
           </div>
         </div>
       </Card>
@@ -108,8 +162,19 @@ const WalletOverview = () => {
                 </div>
               </div>
               <div className="text-right">
-                <p className="font-medium">$81,811.00</p>
-                <p className="text-xs text-red-400">-6.15%</p>
+                {isLoading ? (
+                  <div className="flex flex-col space-y-1">
+                    <div className="h-4 w-20 bg-gray-800 animate-pulse rounded"></div>
+                    <div className="h-3 w-12 bg-gray-800 animate-pulse rounded self-end"></div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="font-medium">{formatUsdAmount(cryptoPrices.bitcoin.price)}</p>
+                    <p className={`text-xs ${cryptoPrices.bitcoin.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {cryptoPrices.bitcoin.change >= 0 ? '+' : ''}{cryptoPrices.bitcoin.change.toFixed(2)}%
+                    </p>
+                  </>
+                )}
               </div>
             </div>
             
@@ -124,8 +189,19 @@ const WalletOverview = () => {
                 </div>
               </div>
               <div className="text-right">
-                <p className="font-medium">$1,773.93</p>
-                <p className="text-xs text-green-400">+6.95%</p>
+                {isLoading ? (
+                  <div className="flex flex-col space-y-1">
+                    <div className="h-4 w-20 bg-gray-800 animate-pulse rounded"></div>
+                    <div className="h-3 w-12 bg-gray-800 animate-pulse rounded self-end"></div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="font-medium">{formatUsdAmount(cryptoPrices.cardano.price)}</p>
+                    <p className={`text-xs ${cryptoPrices.cardano.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {cryptoPrices.cardano.change >= 0 ? '+' : ''}{cryptoPrices.cardano.change.toFixed(2)}%
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </div>
