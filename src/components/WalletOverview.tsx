@@ -15,6 +15,7 @@ const WalletOverview = () => {
       if (user) {
         try {
           const profile = await getUserProfile();
+          // Handle the case where the profile might not have these fields
           setBalance(profile.wallet_balance || 0);
           setEarnings(profile.total_earnings || 0);
         } catch (error) {

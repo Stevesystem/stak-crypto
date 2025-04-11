@@ -39,14 +39,14 @@ export const updateWalletBalance = async (userId: string, amount: number, isDepo
     // Get the current user profile
     const { data: userProfile, error: fetchError } = await supabase
       .from('user_profiles')
-      .select('wallet_balance')
+      .select('*')
       .eq('id', userId)
       .single();
     
     if (fetchError) throw fetchError;
     
     // Calculate the new balance
-    const currentBalance = userProfile.wallet_balance || 0;
+    const currentBalance = userProfile?.wallet_balance || 0;
     const newBalance = isDeposit ? currentBalance + amount : currentBalance - amount;
     
     // Update the user's wallet balance

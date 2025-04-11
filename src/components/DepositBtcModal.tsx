@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Copy, Barcode } from "lucide-react";
+import { Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { createTransaction } from "@/lib/api";
@@ -24,7 +24,7 @@ type DepositBtcModalProps = {
 const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
   const [amount, setAmount] = useState<string>("");
   const [btcAmount, setBtcAmount] = useState<string>("0.00000000");
-  const [walletAddress, setWalletAddress] = useState<string>("bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh");
+  const [walletAddress, setWalletAddress] = useState<string>("bc1q60l2gxf4zv03eht3rvw8f36vyfwmh9tfqmsygk");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { user, profile } = useAuth();
@@ -101,11 +101,12 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
         <div className="py-4 space-y-6">
           {/* QR Code */}
           <div className="flex flex-col items-center">
-            <div className="w-48 h-48 bg-white p-2 mb-3">
-              <div className="flex items-center justify-center h-full">
-                <Barcode className="w-32 h-32 text-black" />
-                <span className="text-xs text-gray-500">QR code placeholder</span>
-              </div>
+            <div className="w-48 h-48 bg-white p-2 mb-3 flex items-center justify-center">
+              <img 
+                src="/lovable-uploads/b13f7e7a-8639-455d-8e4c-f19e63c4405b.png" 
+                alt="BTC Wallet QR Code" 
+                className="max-w-full max-h-full"
+              />
             </div>
             <p className="text-sm text-gray-400">Scan this QR code with your wallet app</p>
           </div>
