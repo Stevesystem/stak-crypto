@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -82,7 +81,14 @@ const SignUp = () => {
   return (
     <div className="min-h-screen bg-[#00030B]">
       <nav className="flex justify-between items-center p-4">
-        <div className="text-2xl font-bold text-blue-500">STAK</div>
+        <div className="flex items-center">
+          <img 
+            src="/lovable-uploads/ec64f731-7100-4680-9a4e-63452c556547.png" 
+            alt="stake&earn Logo" 
+            className="h-8 w-8 mr-2" 
+          />
+          <div className="text-2xl font-bold text-blue-500">stake&earn</div>
+        </div>
         <div className="flex gap-4 items-center">
           <Link to="/" className="text-white">Home</Link>
           <Link to="/about" className="text-white">About Us</Link>

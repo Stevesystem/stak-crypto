@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -8,8 +7,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-16">
           <div>
             <div className="flex items-center mb-4">
-              <div className="mr-2 text-primary text-2xl">⟁</div>
-              <span className="font-bold text-xl text-white">STAK</span>
+              <img 
+                src="/lovable-uploads/ec64f731-7100-4680-9a4e-63452c556547.png" 
+                alt="stake&earn Logo" 
+                className="h-8 w-8 mr-2" 
+              />
+              <span className="font-bold text-xl text-white">stake&earn</span>
             </div>
             <p className="text-gray-400 text-sm mb-4">
               Growing your crypto through staking.

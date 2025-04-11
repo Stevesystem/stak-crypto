@@ -22,11 +22,13 @@ const Navbar = () => {
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
+              <img 
+                src="/lovable-uploads/ec64f731-7100-4680-9a4e-63452c556547.png" 
+                alt="stake&earn Logo" 
+                className="h-8 w-8 mr-2" 
+              />
               <div className="text-blue-500 font-bold text-2xl">
-                <span className="relative">
-                  <span className="inline-block">STAK</span>
-                  <span className="absolute -top-1 -left-4 w-10 h-6 border-t-2 border-l-2 border-blue-500 rounded-tl-lg"></span>
-                </span>
+                stake&earn
               </div>
             </Link>
           </div>
@@ -128,3 +130,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
