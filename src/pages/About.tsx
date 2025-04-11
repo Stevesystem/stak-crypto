@@ -62,7 +62,7 @@ const About = () => {
             <div className="flex flex-col md:flex-row gap-12 items-center">
               <div className="md:w-1/2">
                 <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-50">Our Story</h2>
-                <p className="text-lg mb-4 text-slate-50">Launched in 2022 by a team of Bitcoin advocates and security experts, Bitcoin Stak Crypto was born from a simple vision: to create a platform where anyone can earn passive income from their Bitcoin without compromising on security or liquidity.</p>
+                <p className="text-lg mb-4 text-slate-50">Launched in 2022 by a team of Bitcoin advocates and security experts, Stake&Earn was born from a simple vision: to create a platform where anyone can earn passive income from their Bitcoin without compromising on security or liquidity.</p>
                 <p className="text-lg mb-4 text-slate-50">We noticed that many existing yield platforms were either too complex for average users, had lengthy lock-up periods, or worse – took dangerous risks with customer funds. We built Bitcoin Stak Crypto to solve these problems.</p>
                 <p className="text-lg text-slate-50">
                   Today, we're proud to serve thousands of Bitcoin holders worldwide, helping them earn consistent returns while maintaining full control of their assets.
