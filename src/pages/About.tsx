@@ -49,7 +49,7 @@ const About = () => {
             <div className="inline-block p-3 rounded-full bg-bitcoin/20 mb-6">
               <Bitcoin size={32} className="text-bitcoin" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">About Bitcoin STAK Crypto</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">About Bitcoin Stake&Earn</h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto">
               We're on a mission to help Bitcoin holders grow their holdings through secure, transparent staking solutions.
             </p>
