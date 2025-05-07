@@ -68,14 +68,22 @@ export const updateWalletBalance = async (userId: string, amount: number, isDepo
 // Transaction History Functions
 export const createTransaction = async (transaction: Omit<TransactionHistory, 'id' | 'created_at'>) => {
   try {
+    // Get the current session to ensure we're authenticated
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      throw new Error('Not authenticated');
+    }
+    
+    console.log('Creating transaction with session:', session);
+    
+    // Make sure the user_id matches the current authenticated user
+    // This is crucial for RLS policies to work correctly
+    if (transaction.user_id !== session.user.id) {
+      console.warn('Transaction user_id does not match authenticated user, correcting...');
+      transaction.user_id = session.user.id;
+    }
+    
     console.log('Creating transaction:', transaction);
-    
-    // Get the current user to ensure we're authenticated
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
-    
-    // Ensure user_id is set to the current authenticated user's ID
-    transaction.user_id = user.id;
     
     const { data, error } = await supabase
       .from('transaction_history')

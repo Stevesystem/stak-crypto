@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -11,10 +12,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Copy } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { createTransaction } from "@/lib/api";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 type DepositBtcModalProps = {
   isOpen: boolean;
@@ -47,7 +48,7 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
   };
 
   const handleDeposit = async () => {
-    if (!user || !profile) {
+    if (!user) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -58,22 +59,62 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
 
     setIsSubmitting(true);
     try {
-      // Ensure we have the most up-to-date user session
+      // Double check we have the most up-to-date session
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         throw new Error("You must be logged in to make a deposit");
       }
-
-      // Create a transaction record with the authenticated user's ID
-      await createTransaction({
+      
+      console.log("Current session:", session);
+      console.log("Creating transaction for user:", user.id);
+      
+      // Get user profile if we don't have it
+      let currentProfile = profile;
+      if (!currentProfile) {
+        const { data, error } = await supabase
+          .from('user_profiles')
+          .select()
+          .eq('id', user.id)
+          .maybeSingle();
+          
+        if (error) {
+          console.error("Error fetching profile:", error);
+        } else if (data) {
+          currentProfile = data;
+        } else {
+          // Try to create profile
+          const { data: newProfile, error: createError } = await supabase
+            .from('user_profiles')
+            .insert({
+              id: user.id,
+              email: user.email || '',
+              username: user.email?.split('@')[0] || '',
+              wallet_address: ''
+            })
+            .select()
+            .single();
+            
+          if (createError) {
+            console.error("Error creating profile:", createError);
+          } else {
+            currentProfile = newProfile;
+          }
+        }
+      }
+      
+      // Ensure we have the required user data
+      const transaction = {
         user_id: user.id,
-        username: profile.username || '',
-        email: profile.email || '',
-        wallet_address: profile.wallet_address || '',
-        transaction_type: 'deposit',
+        username: currentProfile?.username || user.email?.split('@')[0] || '',
+        email: currentProfile?.email || user.email || '',
+        wallet_address: currentProfile?.wallet_address || '',
+        transaction_type: 'deposit' as 'deposit' | 'withdrawal' | 'transfer',
         amount: parseFloat(amount),
-        status: 'pending'
-      });
+        status: 'pending' as 'pending' | 'completed' | 'failed'
+      };
+
+      console.log("Submitting transaction:", transaction);
+      await createTransaction(transaction);
 
       toast({
         title: "BTC Deposit Initiated",
@@ -82,12 +123,12 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
       
       onClose();
       setAmount("");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Deposit error:", error);
       toast({
         variant: "destructive",
         title: "Deposit Failed",
-        description: "There was an error processing your deposit. Please try again.",
+        description: error.message || "There was an error processing your deposit. Please try again.",
       });
     } finally {
       setIsSubmitting(false);

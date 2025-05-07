@@ -55,6 +55,37 @@ const SignIn = () => {
       }
 
       console.log("Login successful:", data);
+      console.log("Session information:", sessionResponse.data.session);
+      
+      // Check if the user has a profile, if not attempt to create one
+      const { data: profileData, error: profileError } = await supabase
+        .from('user_profiles')
+        .select()
+        .eq('id', data.user.id)
+        .maybeSingle();
+      
+      if (profileError) {
+        console.error("Error checking profile:", profileError);
+      }
+      
+      if (!profileData) {
+        console.log("Creating user profile for:", data.user.id);
+        const { error: insertError } = await supabase
+          .from('user_profiles')
+          .insert({
+            id: data.user.id,
+            email: data.user.email,
+            username: data.user.email?.split('@')[0] || '',
+            wallet_address: '' // Default empty wallet address
+          });
+          
+        if (insertError) {
+          console.error("Error creating profile:", insertError);
+        } else {
+          console.log("Profile created successfully");
+        }
+      }
+
       toast({
         title: "Success!",
         description: "You have successfully signed in"
