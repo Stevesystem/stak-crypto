@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -28,11 +29,8 @@ const SignIn = () => {
         error
       } = await supabase.auth.signInWithPassword({
         email: formData.email,
-        password: formData.password,
-        options: {
-          // Add persistence to keep session active
-          persistSession: true
-        }
+        password: formData.password
+        // Remove the options with persistSession as it's not supported in this version
       });
       
       if (error) {
