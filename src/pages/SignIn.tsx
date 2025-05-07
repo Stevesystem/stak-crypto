@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -29,7 +28,11 @@ const SignIn = () => {
         error
       } = await supabase.auth.signInWithPassword({
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        options: {
+          // Add persistence to keep session active
+          persistSession: true
+        }
       });
       
       if (error) {
@@ -81,10 +84,14 @@ const SignIn = () => {
           
         if (insertError) {
           console.error("Error creating profile:", insertError);
+          // Don't throw here, just log the error and continue
         } else {
           console.log("Profile created successfully");
         }
       }
+
+      // Force refresh auth state to ensure it's properly captured
+      await supabase.auth.refreshSession();
 
       toast({
         title: "Success!",

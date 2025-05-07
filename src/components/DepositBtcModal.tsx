@@ -47,30 +47,53 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
     });
   };
 
-  const handleDeposit = async () => {
-    if (!user) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "You must be logged in to make a deposit",
-      });
-      return;
+  const validateSession = async () => {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) {
+      console.error("Session error:", error);
+      return null;
     }
 
-    setIsSubmitting(true);
+    if (!data.session) {
+      console.error("No active session found");
+      return null;
+    }
+
+    console.log("Valid session found:", data.session.user.id);
+    return data.session;
+  };
+
+  const handleDeposit = async () => {
     try {
-      // Double check we have the most up-to-date session
-      const { data: { session } } = await supabase.auth.getSession();
+      // First validate session to ensure we're authenticated
+      const session = await validateSession();
       if (!session) {
-        throw new Error("You must be logged in to make a deposit");
+        toast({
+          variant: "destructive",
+          title: "Authentication Error",
+          description: "You need to be logged in to make a deposit. Please sign in again.",
+        });
+        
+        // Don't redirect automatically here - let the user see the error
+        return;
       }
-      
-      console.log("Current session:", session);
-      console.log("Creating transaction for user:", user.id);
+
+      if (!user) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "User information not available. Please sign in again.",
+        });
+        return;
+      }
+
+      setIsSubmitting(true);
+      console.log("Deposit initiated by user:", user.id);
       
       // Get user profile if we don't have it
       let currentProfile = profile;
       if (!currentProfile) {
+        console.log("Fetching profile for user:", user.id);
         const { data, error } = await supabase
           .from('user_profiles')
           .select()
@@ -81,7 +104,9 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
           console.error("Error fetching profile:", error);
         } else if (data) {
           currentProfile = data;
+          console.log("Profile found:", data);
         } else {
+          console.log("No profile found, attempting to create one");
           // Try to create profile
           const { data: newProfile, error: createError } = await supabase
             .from('user_profiles')
@@ -97,9 +122,14 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
           if (createError) {
             console.error("Error creating profile:", createError);
           } else {
+            console.log("New profile created:", newProfile);
             currentProfile = newProfile;
           }
         }
+      }
+      
+      if (!currentProfile) {
+        throw new Error("Could not retrieve or create user profile");
       }
       
       // Ensure we have the required user data
