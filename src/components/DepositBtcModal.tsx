@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -15,6 +14,7 @@ import { Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { createTransaction } from "@/lib/api";
+import { supabase } from "@/lib/supabase";
 
 type DepositBtcModalProps = {
   isOpen: boolean;
@@ -58,7 +58,13 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
 
     setIsSubmitting(true);
     try {
-      // Create a transaction record
+      // Ensure we have the most up-to-date user session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("You must be logged in to make a deposit");
+      }
+
+      // Create a transaction record with the authenticated user's ID
       await createTransaction({
         user_id: user.id,
         username: profile.username || '',

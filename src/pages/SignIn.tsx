@@ -1,14 +1,14 @@
+
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+
 const SignIn = () => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as any)?.from?.pathname || "/dashboard";
@@ -18,6 +18,7 @@ const SignIn = () => {
     password: "",
     rememberMe: false
   });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -30,6 +31,7 @@ const SignIn = () => {
         email: formData.email,
         password: formData.password
       });
+      
       if (error) {
         // Check if the error is about unconfirmed email
         if (error.message?.includes("Email not confirmed")) {
@@ -45,6 +47,13 @@ const SignIn = () => {
         }
         throw error;
       }
+
+      // Make sure to get the session after signing in
+      const sessionResponse = await supabase.auth.getSession();
+      if (sessionResponse.error) {
+        throw sessionResponse.error;
+      }
+
       console.log("Login successful:", data);
       toast({
         title: "Success!",
@@ -62,16 +71,17 @@ const SignIn = () => {
       setLoading(false);
     }
   };
+
   return <div className="min-h-screen bg-[#00030B]">
       <nav className="flex justify-between items-center p-4">
         <div className="flex items-center">
           <img src="/lovable-uploads/ec64f731-7100-4680-9a4e-63452c556547.png" alt="stake&earn Logo" className="h-8 w-8 mr-2" />
-          
+          <span className="text-2xl font-bold text-blue-500">stake&earn</span>
         </div>
         <div className="flex gap-4 items-center">
           <Link to="/" className="text-white">Home</Link>
           <Link to="/about" className="text-white">About Us</Link>
-          <Button className="bg-blue-500">Start Staking</Button>
+          <Button className="bg-blue-500" onClick={() => navigate("/signin")}>Start Staking</Button>
         </div>
       </nav>
 
@@ -84,25 +94,25 @@ const SignIn = () => {
             <div className="space-y-2">
               <label className="text-gray-400">Email</label>
               <Input type="email" placeholder="Enter your email" className="bg-[#1A2333] border-gray-700 text-white" value={formData.email} onChange={e => setFormData({
-              ...formData,
-              email: e.target.value
-            })} required />
+                ...formData,
+                email: e.target.value
+              })} required />
             </div>
 
             <div className="space-y-2">
               <label className="text-gray-400">Password</label>
               <Input type="password" placeholder="Enter your password" className="bg-[#1A2333] border-gray-700 text-white" value={formData.password} onChange={e => setFormData({
-              ...formData,
-              password: e.target.value
-            })} required />
+                ...formData,
+                password: e.target.value
+              })} required />
             </div>
 
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <Checkbox id="remember" checked={formData.rememberMe} onCheckedChange={checked => setFormData({
-                ...formData,
-                rememberMe: checked as boolean
-              })} />
+                  ...formData,
+                  rememberMe: checked as boolean
+                })} />
                 <label htmlFor="remember" className="text-sm text-gray-400">Remember me</label>
               </div>
               <Link to="/forgot-password" className="text-sm text-blue-500">Forgot password?</Link>
@@ -120,4 +130,5 @@ const SignIn = () => {
       </div>
     </div>;
 };
+
 export default SignIn;

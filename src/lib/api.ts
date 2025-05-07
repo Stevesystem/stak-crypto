@@ -69,6 +69,14 @@ export const updateWalletBalance = async (userId: string, amount: number, isDepo
 export const createTransaction = async (transaction: Omit<TransactionHistory, 'id' | 'created_at'>) => {
   try {
     console.log('Creating transaction:', transaction);
+    
+    // Get the current user to ensure we're authenticated
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+    
+    // Ensure user_id is set to the current authenticated user's ID
+    transaction.user_id = user.id;
+    
     const { data, error } = await supabase
       .from('transaction_history')
       .insert(transaction)
