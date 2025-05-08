@@ -30,7 +30,6 @@ const SignIn = () => {
       } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password
-        // Remove the options with persistSession as it's not supported in this version
       });
       
       if (error) {
@@ -49,53 +48,20 @@ const SignIn = () => {
         throw error;
       }
 
-      // Make sure to get the session after signing in
-      const sessionResponse = await supabase.auth.getSession();
-      if (sessionResponse.error) {
-        throw sessionResponse.error;
-      }
-
-      console.log("Login successful:", data);
-      console.log("Session information:", sessionResponse.data.session);
-      
-      // Check if the user has a profile, if not attempt to create one
-      const { data: profileData, error: profileError } = await supabase
-        .from('user_profiles')
-        .select()
-        .eq('id', data.user.id)
-        .maybeSingle();
-      
-      if (profileError) {
-        console.error("Error checking profile:", profileError);
-      }
-      
-      if (!profileData) {
-        console.log("Creating user profile for:", data.user.id);
-        const { error: insertError } = await supabase
-          .from('user_profiles')
-          .insert({
-            id: data.user.id,
-            email: data.user.email,
-            username: data.user.email?.split('@')[0] || '',
-            wallet_address: '' // Default empty wallet address
-          });
-          
-        if (insertError) {
-          console.error("Error creating profile:", insertError);
-          // Don't throw here, just log the error and continue
-        } else {
-          console.log("Profile created successfully");
-        }
-      }
-
-      // Force refresh auth state to ensure it's properly captured
+      // Manually refresh session to ensure all user data is loaded
       await supabase.auth.refreshSession();
 
+      console.log("Login successful:", data);
+      
       toast({
         title: "Success!",
         description: "You have successfully signed in"
       });
-      navigate(from);
+      
+      // Delay navigation slightly to ensure auth state is updated
+      setTimeout(() => {
+        navigate(from);
+      }, 300);
     } catch (error: any) {
       console.error("Login error:", error);
       toast({

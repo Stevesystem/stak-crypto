@@ -68,7 +68,11 @@ export const updateWalletBalance = async (userId: string, amount: number, isDepo
 // Transaction History Functions
 export const createTransaction = async (transaction: Omit<TransactionHistory, 'id' | 'created_at'>) => {
   try {
-    // No need to get the session again, we're already checking in the components
+    // Validate transaction data
+    if (!transaction.user_id) {
+      throw new Error('User ID is required for transaction');
+    }
+    
     console.log('Creating transaction:', transaction);
     
     const { data, error } = await supabase

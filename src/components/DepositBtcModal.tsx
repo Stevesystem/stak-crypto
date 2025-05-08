@@ -24,10 +24,20 @@ type DepositBtcModalProps = {
 const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
   const [amount, setAmount] = useState<string>("");
   const [btcAmount, setBtcAmount] = useState<string>("0.00000000");
-  const [walletAddress, setWalletAddress] = useState<string>("bc1q60l2gxf4zv03eht3rvw8f36vyfwmh9tfqmsygk");
+  const [walletAddress, setWalletAddress] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { user, profile } = useAuth();
+
+  // Set wallet address from profile when available
+  useEffect(() => {
+    if (profile?.wallet_address) {
+      setWalletAddress(profile.wallet_address);
+    } else if (walletAddress === "") {
+      // Default wallet address only if not already set
+      setWalletAddress("bc1q60l2gxf4zv03eht3rvw8f36vyfwmh9tfqmsygk");
+    }
+  }, [profile]);
 
   // Calculate BTC amount from USD (using a mock exchange rate)
   useEffect(() => {
@@ -39,35 +49,25 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
   }, [amount]);
 
   const handleDeposit = async () => {
+    if (!user || !profile) {
+      toast({
+        variant: "destructive",
+        title: "Authentication Required",
+        description: "Please make sure you are logged in before making a deposit.",
+      });
+      return;
+    }
+    
     try {
-      if (!user) {
-        toast({
-          variant: "destructive",
-          title: "Authentication Error",
-          description: "You need to be logged in to make a deposit. Please sign in again.",
-        });
-        return;
-      }
-      
       setIsSubmitting(true);
       console.log("Deposit initiated by user:", user.id);
       
-      // Get the profile information from context
-      if (!profile) {
-        toast({
-          variant: "destructive",
-          title: "Profile Error",
-          description: "Unable to access your profile information. Please refresh and try again.",
-        });
-        return;
-      }
-      
-      // Prepare transaction data
+      // Prepare transaction data using available profile info
       const transaction = {
         user_id: user.id,
-        username: profile?.username || user.email?.split('@')[0] || '',
-        email: profile?.email || user.email || '',
-        wallet_address: profile?.wallet_address || walletAddress,
+        username: profile.username || user.email?.split('@')[0] || '',
+        email: profile.email || user.email || '',
+        wallet_address: walletAddress || profile.wallet_address || '',
         transaction_type: 'deposit' as 'deposit' | 'withdrawal' | 'transfer',
         amount: parseFloat(amount),
         status: 'pending' as 'pending' | 'completed' | 'failed'

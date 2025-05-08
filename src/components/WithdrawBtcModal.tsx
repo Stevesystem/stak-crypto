@@ -45,20 +45,11 @@ const WithdrawBtcModal = ({ isOpen, onClose }: WithdrawBtcModalProps) => {
   }, [profile]);
 
   const handleSubmit = async () => {
-    if (!user) {
+    if (!user || !profile) {
       toast({
         variant: "destructive",
-        title: "Authentication Error",
-        description: "You must be logged in to make a withdrawal. Please sign in again.",
-      });
-      return;
-    }
-
-    if (!profile) {
-      toast({
-        variant: "destructive",
-        title: "Profile Error",
-        description: "Unable to access your profile information. Please refresh and try again.",
+        title: "Authentication Required",
+        description: "Please make sure you are logged in before making a withdrawal.",
       });
       return;
     }
@@ -87,12 +78,12 @@ const WithdrawBtcModal = ({ isOpen, onClose }: WithdrawBtcModalProps) => {
       if (walletAddress !== profile.wallet_address) {
         setWalletAddress("");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Withdrawal error:", error);
       toast({
         variant: "destructive",
         title: "Withdrawal Failed",
-        description: "There was an error processing your withdrawal. Please try again.",
+        description: error.message || "There was an error processing your withdrawal. Please try again.",
       });
     } finally {
       setIsSubmitting(false);

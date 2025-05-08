@@ -14,37 +14,46 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Helper function to add delay for retries with exponential backoff
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [retryCount, setRetryCount] = useState(0);
+  const [lastFetchTime, setLastFetchTime] = useState(0);
   const MAX_RETRIES = 3;
+  const MIN_FETCH_INTERVAL = 10000; // Minimum 10 seconds between profile fetches
 
   useEffect(() => {
-    // Set up auth state listener FIRST - prevents race conditions
+    // Set up auth state listener FIRST with proper error handling
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, newSession) => {
+      async (event, newSession) => {
         console.log("Auth state changed:", event);
         
-        // Update session and user synchronously
+        // Update session and user synchronously to prevent race conditions
         setSession(newSession);
         setUser(newSession?.user ?? null);
         
-        // If user is logged in, fetch their profile
+        // If user is logged in, fetch their profile with throttling
         if (newSession?.user) {
-          // Use setTimeout to avoid deadlock with Supabase auth
-          setTimeout(() => {
-            fetchUserProfile(newSession.user.id);
-          }, 0);
+          const now = Date.now();
+          if (now - lastFetchTime > MIN_FETCH_INTERVAL) {
+            setLastFetchTime(now);
+            // Use setTimeout to avoid deadlock with Supabase auth
+            setTimeout(() => {
+              fetchUserProfile(newSession.user.id);
+            }, 100);
+          }
         } else {
           setProfile(null);
         }
       }
     );
 
-    // THEN check for existing session
+    // THEN check for existing session with proper error handling
     const initializeAuth = async () => {
       try {
         const { data: { session: initialSession } } = await supabase.auth.getSession();
@@ -75,6 +84,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       console.log("Fetching profile for user:", userId);
       
+      // Only attempt to fetch profile if we have a valid user ID
+      if (!userId) {
+        console.error("No user ID provided for profile fetch");
+        return;
+      }
+      
       // Use maybeSingle instead of single to handle potential missing profiles
       const { data, error } = await supabase
         .from('user_profiles')
@@ -93,10 +108,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         
         // Handle rate limiting with exponential backoff
         if (error.message?.includes("rate limit")) {
-          const delay = Math.pow(2, retryCount) * 1000;
-          console.log(`Rate limited, retrying in ${delay}ms`);
+          const backoffTime = Math.min(Math.pow(2, retryCount) * 1000, 30000); // Max 30 second delay
+          console.log(`Rate limited, retrying in ${backoffTime}ms`);
           setRetryCount(prev => prev + 1);
-          setTimeout(() => fetchUserProfile(userId), delay);
+          await delay(backoffTime);
+          fetchUserProfile(userId);
           return;
         }
         
