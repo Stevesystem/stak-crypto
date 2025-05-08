@@ -9,12 +9,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Copy } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { createTransaction } from "@/lib/api";
+import QrCodeDisplay from "@/components/deposit/QrCodeDisplay";
+import WalletAddressInput from "@/components/deposit/WalletAddressInput";
+import AmountInput from "@/components/deposit/AmountInput";
 
 type DepositBtcModalProps = {
   isOpen: boolean;
@@ -37,14 +37,6 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
     const btc = usdAmount / exchangeRate;
     setBtcAmount(btc.toFixed(8));
   }, [amount]);
-
-  const handleCopyAddress = () => {
-    navigator.clipboard.writeText(walletAddress);
-    toast({
-      title: "Address copied!",
-      description: "BTC wallet address copied to clipboard",
-    });
-  };
 
   const handleDeposit = async () => {
     try {
@@ -118,56 +110,17 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
 
         <div className="py-4 space-y-6">
           {/* QR Code */}
-          <div className="flex flex-col items-center">
-            <div className="w-48 h-48 bg-white p-2 mb-3 flex items-center justify-center">
-              <img 
-                src="/lovable-uploads/b13f7e7a-8639-455d-8e4c-f19e63c4405b.png" 
-                alt="BTC Wallet QR Code" 
-                className="max-w-full max-h-full"
-              />
-            </div>
-            <p className="text-sm text-gray-400">Scan this QR code with your wallet app</p>
-          </div>
+          <QrCodeDisplay imageUrl="/lovable-uploads/b13f7e7a-8639-455d-8e4c-f19e63c4405b.png" />
 
           {/* Wallet Address */}
-          <div className="space-y-2">
-            <Label htmlFor="wallet-address" className="text-gray-300">BTC Wallet Address</Label>
-            <div className="flex items-center bg-gray-900 rounded-md border border-gray-800">
-              <Input
-                id="wallet-address"
-                value={walletAddress}
-                readOnly
-                className="border-0 bg-transparent text-white focus-visible:ring-0 focus-visible:ring-offset-0"
-              />
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
-                className="text-blue-400 hover:text-blue-300 hover:bg-transparent"
-                onClick={handleCopyAddress}
-              >
-                <Copy className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+          <WalletAddressInput walletAddress={walletAddress} />
 
           {/* Amount Input */}
-          <div className="space-y-2">
-            <Label htmlFor="amount" className="text-gray-300">Amount (USD)</Label>
-            <Input
-              id="amount"
-              placeholder="Enter amount in USD"
-              type="number"
-              min="0"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="bg-gray-900 border-gray-800 text-white"
-            />
-            <div className="text-sm text-gray-400 flex justify-between">
-              <span>BTC Equivalent:</span>
-              <span className="font-mono">{btcAmount} BTC</span>
-            </div>
-          </div>
+          <AmountInput 
+            amount={amount} 
+            btcAmount={btcAmount} 
+            onAmountChange={setAmount} 
+          />
         </div>
 
         <DialogFooter>
