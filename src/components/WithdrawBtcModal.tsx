@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { createTransaction } from "@/lib/api";
 
@@ -26,7 +26,7 @@ const WithdrawBtcModal = ({ isOpen, onClose }: WithdrawBtcModalProps) => {
   const [btcAmount, setBtcAmount] = useState<string>("0.00000000");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { user, profile, session } = useAuth();
+  const { user, profile } = useAuth();
   
   // Calculate BTC amount from USD (using a mock exchange rate)
   useEffect(() => {
@@ -45,7 +45,7 @@ const WithdrawBtcModal = ({ isOpen, onClose }: WithdrawBtcModalProps) => {
   }, [profile]);
 
   const handleSubmit = async () => {
-    if (!user || !session) {
+    if (!user) {
       toast({
         variant: "destructive",
         title: "Authentication Error",

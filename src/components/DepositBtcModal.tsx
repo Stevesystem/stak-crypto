@@ -27,7 +27,7 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
   const [walletAddress, setWalletAddress] = useState<string>("bc1q60l2gxf4zv03eht3rvw8f36vyfwmh9tfqmsygk");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { user, profile, session } = useAuth();
+  const { user, profile } = useAuth();
 
   // Calculate BTC amount from USD (using a mock exchange rate)
   useEffect(() => {
@@ -40,8 +40,7 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
 
   const handleDeposit = async () => {
     try {
-      // Use the auth context to verify authenticated state
-      if (!user || !session) {
+      if (!user) {
         toast({
           variant: "destructive",
           title: "Authentication Error",
@@ -49,14 +48,12 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
         });
         return;
       }
-
+      
       setIsSubmitting(true);
       console.log("Deposit initiated by user:", user.id);
       
-      // Use the profile from auth context
-      let currentProfile = profile;
-      
-      if (!currentProfile) {
+      // Get the profile information from context
+      if (!profile) {
         toast({
           variant: "destructive",
           title: "Profile Error",
@@ -68,9 +65,9 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
       // Prepare transaction data
       const transaction = {
         user_id: user.id,
-        username: currentProfile?.username || user.email?.split('@')[0] || '',
-        email: currentProfile?.email || user.email || '',
-        wallet_address: currentProfile?.wallet_address || '',
+        username: profile?.username || user.email?.split('@')[0] || '',
+        email: profile?.email || user.email || '',
+        wallet_address: profile?.wallet_address || walletAddress,
         transaction_type: 'deposit' as 'deposit' | 'withdrawal' | 'transfer',
         amount: parseFloat(amount),
         status: 'pending' as 'pending' | 'completed' | 'failed'

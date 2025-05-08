@@ -19,12 +19,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 3;
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    // Set up auth state listener FIRST - prevents race conditions
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, newSession) => {
-        console.log("Auth state changed:", event, newSession?.user?.email);
+        console.log("Auth state changed:", event);
         
         // Update session and user synchronously
         setSession(newSession);
@@ -43,17 +45,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
-      console.log("Initial session check:", initialSession?.user?.email);
-      
-      setSession(initialSession);
-      setUser(initialSession?.user ?? null);
-      
-      if (initialSession?.user) {
-        fetchUserProfile(initialSession.user.id);
+    const initializeAuth = async () => {
+      try {
+        const { data: { session: initialSession } } = await supabase.auth.getSession();
+        
+        console.log("Initial session check:", initialSession?.user?.email);
+        
+        setSession(initialSession);
+        setUser(initialSession?.user ?? null);
+        
+        if (initialSession?.user) {
+          await fetchUserProfile(initialSession.user.id);
+        }
+      } catch (err) {
+        console.error("Error in auth initialization:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    };
+
+    initializeAuth();
 
     return () => {
       subscription?.unsubscribe();
@@ -73,9 +84,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (error) {
         console.error("Error fetching user profile:", error);
+        
+        // If we've hit the retry limit, stop trying to avoid infinite loops
+        if (retryCount >= MAX_RETRIES) {
+          console.error("Max retries reached for profile fetch");
+          return;
+        }
+        
+        // Handle rate limiting with exponential backoff
+        if (error.message?.includes("rate limit")) {
+          const delay = Math.pow(2, retryCount) * 1000;
+          console.log(`Rate limited, retrying in ${delay}ms`);
+          setRetryCount(prev => prev + 1);
+          setTimeout(() => fetchUserProfile(userId), delay);
+          return;
+        }
+        
         return;
       }
       
+      // Reset retry count on successful fetch
+      setRetryCount(0);
       console.log("Profile data:", data);
       
       // If we don't have a profile yet, create one
@@ -129,8 +158,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const contextValue: AuthContextType = {
+    user, 
+    session, 
+    profile, 
+    loading, 
+    signOut
+  };
+
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signOut }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
