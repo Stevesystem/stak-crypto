@@ -26,7 +26,7 @@ const WithdrawBtcModal = ({ isOpen, onClose }: WithdrawBtcModalProps) => {
   const [btcAmount, setBtcAmount] = useState<string>("0.00000000");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { user, profile } = useAuth();
+  const { user, profile, session } = useAuth();
   
   // Calculate BTC amount from USD (using a mock exchange rate)
   useEffect(() => {
@@ -45,11 +45,20 @@ const WithdrawBtcModal = ({ isOpen, onClose }: WithdrawBtcModalProps) => {
   }, [profile]);
 
   const handleSubmit = async () => {
-    if (!user || !profile) {
+    if (!user || !session) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "You must be logged in to make a withdrawal",
+        title: "Authentication Error",
+        description: "You must be logged in to make a withdrawal. Please sign in again.",
+      });
+      return;
+    }
+
+    if (!profile) {
+      toast({
+        variant: "destructive",
+        title: "Profile Error",
+        description: "Unable to access your profile information. Please refresh and try again.",
       });
       return;
     }

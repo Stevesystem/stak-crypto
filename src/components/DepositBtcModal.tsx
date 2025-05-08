@@ -15,7 +15,6 @@ import { Copy } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { createTransaction } from "@/lib/api";
-import { supabase } from "@/integrations/supabase/client";
 
 type DepositBtcModalProps = {
   isOpen: boolean;
@@ -28,7 +27,7 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
   const [walletAddress, setWalletAddress] = useState<string>("bc1q60l2gxf4zv03eht3rvw8f36vyfwmh9tfqmsygk");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { user, profile } = useAuth();
+  const { user, profile, session } = useAuth();
 
   // Calculate BTC amount from USD (using a mock exchange rate)
   useEffect(() => {
@@ -47,42 +46,14 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
     });
   };
 
-  const validateSession = async () => {
-    const { data, error } = await supabase.auth.getSession();
-    if (error) {
-      console.error("Session error:", error);
-      return null;
-    }
-
-    if (!data.session) {
-      console.error("No active session found");
-      return null;
-    }
-
-    console.log("Valid session found:", data.session.user.id);
-    return data.session;
-  };
-
   const handleDeposit = async () => {
     try {
-      // First validate session to ensure we're authenticated
-      const session = await validateSession();
-      if (!session) {
+      // Use the auth context to verify authenticated state
+      if (!user || !session) {
         toast({
           variant: "destructive",
           title: "Authentication Error",
           description: "You need to be logged in to make a deposit. Please sign in again.",
-        });
-        
-        // Don't redirect automatically here - let the user see the error
-        return;
-      }
-
-      if (!user) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "User information not available. Please sign in again.",
         });
         return;
       }
@@ -90,49 +61,19 @@ const DepositBtcModal = ({ isOpen, onClose }: DepositBtcModalProps) => {
       setIsSubmitting(true);
       console.log("Deposit initiated by user:", user.id);
       
-      // Get user profile if we don't have it
+      // Use the profile from auth context
       let currentProfile = profile;
-      if (!currentProfile) {
-        console.log("Fetching profile for user:", user.id);
-        const { data, error } = await supabase
-          .from('user_profiles')
-          .select()
-          .eq('id', user.id)
-          .maybeSingle();
-          
-        if (error) {
-          console.error("Error fetching profile:", error);
-        } else if (data) {
-          currentProfile = data;
-          console.log("Profile found:", data);
-        } else {
-          console.log("No profile found, attempting to create one");
-          // Try to create profile
-          const { data: newProfile, error: createError } = await supabase
-            .from('user_profiles')
-            .insert({
-              id: user.id,
-              email: user.email || '',
-              username: user.email?.split('@')[0] || '',
-              wallet_address: ''
-            })
-            .select()
-            .single();
-            
-          if (createError) {
-            console.error("Error creating profile:", createError);
-          } else {
-            console.log("New profile created:", newProfile);
-            currentProfile = newProfile;
-          }
-        }
-      }
       
       if (!currentProfile) {
-        throw new Error("Could not retrieve or create user profile");
+        toast({
+          variant: "destructive",
+          title: "Profile Error",
+          description: "Unable to access your profile information. Please refresh and try again.",
+        });
+        return;
       }
       
-      // Ensure we have the required user data
+      // Prepare transaction data
       const transaction = {
         user_id: user.id,
         username: currentProfile?.username || user.email?.split('@')[0] || '',

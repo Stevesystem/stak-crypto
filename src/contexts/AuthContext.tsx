@@ -21,22 +21,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Test connection to Supabase
-    (async () => {
-      const result = await supabase.auth.getSession();
-      console.log("Initial Supabase session check:", result);
-    })();
-
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, newSession) => {
+      (event, newSession) => {
         console.log("Auth state changed:", event, newSession?.user?.email);
+        
+        // Update session and user synchronously
         setSession(newSession);
         setUser(newSession?.user ?? null);
         
         // If user is logged in, fetch their profile
         if (newSession?.user) {
-          // Use setTimeout to avoid deadlock
+          // Use setTimeout to avoid deadlock with Supabase auth
           setTimeout(() => {
             fetchUserProfile(newSession.user.id);
           }, 0);
@@ -49,6 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
       console.log("Initial session check:", initialSession?.user?.email);
+      
       setSession(initialSession);
       setUser(initialSession?.user ?? null);
       
@@ -66,6 +63,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const fetchUserProfile = async (userId: string) => {
     try {
       console.log("Fetching profile for user:", userId);
+      
+      // Use maybeSingle instead of single to handle potential missing profiles
       const { data, error } = await supabase
         .from('user_profiles')
         .select('*')
@@ -91,7 +90,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             .insert({
               id: userId,
               email: userData.data.user?.email,
-              username: userMetadata?.username || '',
+              username: userMetadata?.username || userData.data.user?.email?.split('@')[0] || '',
               wallet_address: userMetadata?.wallet_address || ''
             })
             .select()
@@ -116,11 +115,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Error signing out:", error.message);
-    } else {
-      setProfile(null);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error signing out:", error.message);
+      } else {
+        setUser(null);
+        setSession(null);
+        setProfile(null);
+      }
+    } catch (error) {
+      console.error("Error in signOut:", error);
     }
   };
 
